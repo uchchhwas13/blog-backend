@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
+const Blog = require('./models/blog');
 
 const userRouter = require('./routes/user');
 const blogRouter = require('./routes/blog');
@@ -22,9 +23,11 @@ app.set('view engine', 'ejs');
 app.set('views', path.resolve('./views'));
 
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
+    const blogs = await Blog.find({});
     res.render('home', {
-        user: req.user 
+        user: req.user,
+        blogs: blogs, 
     });
 });
 
