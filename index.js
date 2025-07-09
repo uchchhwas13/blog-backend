@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 
 const userRouter = require('./routes/user');
+const blogRouter = require('./routes/blog');
+
 const { checkAuthenticationCookie } = require('./middlewares/authentication');
 
 const app = express();
@@ -27,5 +29,6 @@ app.get('/', (req, res) => {
 });
 
 app.use("/user", userRouter);
+app.use("/blog", blogRouter);
 
 app.listen(PORT, () => console.log(`Server is running on http://localhost:${PORT}`));
