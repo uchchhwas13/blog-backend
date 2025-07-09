@@ -4,12 +4,12 @@ function checkAuthenticationCookie(cookieName) {
   return (req, res, next) => {
     const tokenCookieValue = req.cookies[cookieName];
     if (!tokenCookieValue) {
-       next(); // No token, proceed to next middleware
+       return next(); // No token, proceed to next middleware
     }
 
     try {
       const payload = verifyToken(tokenCookieValue);
-      req.user = payload; // Attach user info to request object
+      req.user = payload; 
     } catch (error) {
       console.error('Token verification failed:', error);
     }
