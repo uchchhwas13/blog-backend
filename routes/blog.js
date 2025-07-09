@@ -12,5 +12,10 @@ router.get('/add-new', (req, res) => {
   });
 });
 
+router.post('/', (req, res) => {
+    console.log('Request body for adding blog', req.body);
+    return res.redirect('/');
+});
+
 
 module.exports = router;
