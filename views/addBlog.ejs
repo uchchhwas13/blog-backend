@@ -5,7 +5,10 @@
     <%- include ('./partials/head') %>
   </head>
   <body>
-    <%- include ('./partials/nav') %> <%- include ('./partials/scripts') %>
+    <%- include ('./partials/nav') %> 
+    <%- include ('./partials/scripts') %>
+    <div class="container mt-4">
+      <form action="/blog" method="POST">
     <div class="mt-4 mb-4 mx-5">
       <label for="coverImage" class="form-label">Cover Image</label>
       <input type="file" class="form-control" id="coverImage" name="coverImage" />
@@ -22,6 +25,8 @@
       <button type="submit" class="btn btn-primary">
         Submit
       </button>
+    </div>
+      </form>
     </div>
   </body>
 </html>
