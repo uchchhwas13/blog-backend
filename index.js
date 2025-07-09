@@ -6,7 +6,7 @@ const PORT = 3000;
 app.set('view engine', 'ejs');
 app.set('views', path.resolve('./views'));
 
-app.route('/', (req, res) => {
+app.get('/', (req, res) => {
     res.render('home');
 });
 
