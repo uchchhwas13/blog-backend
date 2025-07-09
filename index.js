@@ -1,11 +1,15 @@
 const express = require('express');
 const path = require('path');
+const mongoose = require('mongoose');
 
 const userRouter = require('./routes/user');
 
 const app = express();
 const PORT = 3000;
 
+mongoose.connect('mongodb://localhost:27017/blogify')
+    .then(() => console.log('Connected to MongoDB'));
+    
 app.set('view engine', 'ejs');
 app.set('views', path.resolve('./views'));
 
