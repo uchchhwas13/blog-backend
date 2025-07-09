@@ -9,10 +9,11 @@ const PORT = 3000;
 
 mongoose.connect('mongodb://localhost:27017/blogify')
     .then(() => console.log('Connected to MongoDB'));
-    
+
 app.set('view engine', 'ejs');
 app.set('views', path.resolve('./views'));
 
+app.use(express.urlencoded({ extended: false }));
 app.get('/', (req, res) => {
     res.render('home');
 });
