@@ -16,10 +16,14 @@ router.post('/signin', async (req, res) => {
   if (!email || !password) {
     return res.status(400).send('All fields are required');
   }
-  
-  const user = await User.matchPassword(email, password);
-  console.log('User found:', user);
-  return res.redirect('/');
+  try {
+  const token = await User.matchPasswordAndGenerateToken(email, password);
+  return res.cookie('token', token).redirect('/');
+  } catch (error) {
+    return res.render('signin', {
+      error: "Incorrect email or password",
+    });
+  }
 });
 
 router.post('/signup', async (req, res) => {
