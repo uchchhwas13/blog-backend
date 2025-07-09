@@ -6,6 +6,10 @@
   </head>
   <body>
     <%- include ('./partials/nav') %> <%- include ('./partials/scripts') %>
+    <div class="mt-4 mb-4 mx-5">
+      <label for="coverImage" class="form-label">Cover Image</label>
+      <input type="file" class="form-control" id="coverImage" name="coverImage" />
+    </div>
     <div class="mb-3 mx-5">
       <label for="title" class="form-label">Title</label>
       <input type="text" class="form-control" id="title" name="title" />
@@ -15,7 +19,7 @@
       <textarea class="form-control" id="body" name="body"> </textarea>
     </div>
     <div class="mb-3 mx-5">
-      <button type="submit" class="btn btn-info">
+      <button type="submit" class="btn btn-primary">
         Submit
       </button>
     </div>
