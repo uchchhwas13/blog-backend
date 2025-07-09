@@ -3,10 +3,6 @@ const User = require('../models/user');
 
 const router = Router();
 
-router.get('/', (req, res) => {
-  return res.render('home');
-});
-
 router.get('/signin', (req, res) => {
   return res.render('signin');
 });
