@@ -12,10 +12,8 @@ router.get('/signup', (req, res) => {
 });
 
 router.post('/signin', async (req, res) => {
+  console.log('from post sign in', req.body);
   const { email, password } = req.body;
-  if (!email || !password) {
-    return res.status(400).send('All fields are required');
-  }
   try {
   const token = await User.matchPasswordAndGenerateToken(email, password);
   return res.cookie('token', token).redirect('/');
