@@ -12,11 +12,16 @@ router.get('/signup', (req, res) => {
 });
 
 router.post('/signup', async (req, res) => {
-  const {fullName, email, password} = req.body;
+  const {fullname, email, password} = req.body;
+  console.log('Request body',req.body);
+  if (!fullname || !email || !password) {
+  return res.status(400).send('All fields are required');
+}
+
   await User.create({
-    name: fullName,
-    email,
-    password,
+    name: fullname,
+    email: email,
+    password: password,
   });
   return res.redirect('/');
 });
