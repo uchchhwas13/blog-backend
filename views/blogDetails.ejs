@@ -18,7 +18,7 @@
     </div>
 
     <div class="container mt-5">
-      <h1>Comments</h1>
+      <h1>Comments (<%= comments.length %>)</h1>
       <% if(locals.user) {%>
       <form action="/blog/comment/<%= blog._id %>" method="POST">
 
