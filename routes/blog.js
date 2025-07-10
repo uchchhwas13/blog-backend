@@ -29,20 +29,22 @@ router.get('/add-new', (req, res) => {
 
 router.post('/', upload.single('coverImage'), async(req, res) => {
     console.log('Request body for adding blog', req.body);
+    console.log('Request user:', req.user);
     console.log('Uploaded file:', req.file);
 
     const blog =  await Blog.create({
       title: req.body.title,
       body: req.body.body,
       coverImageUrl: `/uploads/${req.file.filename}`,
-      createdBy: req.user._id
+      createdBy: req.user.id
     })
     console.log('Blog created successfully', blog);
     return res.redirect(`/blog/${blog._id}`);
 });
 
 router.get('/:id', async (req, res) => {
-  const blog = await Blog.findById(req.params.id);
+  const blog = await Blog.findById(req.params.id).populate("createdBy");
+  console.log('Blog details:', blog);
   return res.render('blogDetails', {
     user: req.user,
     blog: blog
