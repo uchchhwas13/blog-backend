@@ -2,6 +2,7 @@ const { Router } = require('express');
 const multer = require('multer');
 const path = require('path');
 const Blog = require('../models/blog');
+const Comment = require('../models/comment');
 
 const router = Router();
 
@@ -50,5 +51,15 @@ router.get('/:id', async (req, res) => {
     blog: blog
   });
 });
+
+router.post('/comment/:blogId', async (req, res) => {
+  const comment = await Comment.create({
+    content: req.body.content,
+    createdBy: req.user.id,
+    blogId: req.params.blogId
+  });
+  console.log('Comment created:', comment);
+  return res.redirect(`/blog/${req.params.blogId}`);
+})
 
 module.exports = router;
