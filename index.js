@@ -3,6 +3,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const Blog = require('./models/blog');
+const User = require('./models/user');
 
 const userRouter = require('./routes/user');
 const blogRouter = require('./routes/blog');
@@ -26,8 +27,10 @@ app.set('views', path.resolve('./views'));
 
 app.get('/', async (req, res) => {
     const blogs = await Blog.find({});
+    const userInfo = await User.findOne({email: req.user.email});
+    console.log("User info: ", userInfo);
     res.render('home', {
-        user: req.user,
+        user: userInfo,
         blogs: blogs, 
     });
 });
