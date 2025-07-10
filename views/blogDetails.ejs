@@ -11,6 +11,11 @@
       <img src="<%= blog.coverImageUrl %>" width="700px" height="400px" />
       <p> <%= blog.body %></p>
     </div>
+    <div class="container mt-5">
+      <h3>Author</h3>
+      <img src="<%= blog.createdBy.profileImageUrl %>" width="50px" height="50px" />
+      <span><%= blog.createdBy.name %></span>
+    </div>
     <%- include ('./partials/scripts') %>
   </body>
 </html>
