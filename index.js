@@ -1,3 +1,5 @@
+//This file contains the same code as the app.js. I will drop this file later.
+
 const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
