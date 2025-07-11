@@ -1,5 +1,6 @@
 const { Router } = require('express');
 const User = require('../models/user');
+const {handleSignup} = require('../controllers/user');
 
 const router = Router();
 
@@ -24,20 +25,7 @@ router.post('/signin', async (req, res) => {
   }
 });
 
-router.post('/signup', async (req, res) => {
-  const { fullname, email, password } = req.body;
-  console.log('Request body', req.body);
-  if (!fullname || !email || !password) {
-    return res.status(400).send('All fields are required');
-  }
-
-  await User.create({
-    name: fullname,
-    email: email,
-    password: password,
-  });
-  return res.redirect('/');
-});
+router.post('/signup', handleSignup);
 
 router.get('/logout', (req, res) => {
   return res.clearCookie('token').redirect('/');
