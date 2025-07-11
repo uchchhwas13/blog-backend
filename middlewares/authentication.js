@@ -4,7 +4,7 @@ function checkAuthenticationCookie(cookieName) {
   return (req, res, next) => {
     const tokenCookieValue = req.cookies[cookieName];
     if (!tokenCookieValue) {
-       return next(); // No token, proceed to next middleware
+       return next();
     }
 
     try {
