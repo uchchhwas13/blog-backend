@@ -1,6 +1,12 @@
-const { Schema, model } = require('mongoose');
+import { Schema, model } from 'mongoose';
 
-const commentSchema = new Schema(
+interface IComment extends Document {
+  content: string;
+  createdBy: Schema.Types.ObjectId;
+  blogId: Schema.Types.ObjectId;
+}
+
+const commentSchema: Schema<IComment> = new Schema(
   {
     content: {
       type: String,
@@ -20,5 +26,4 @@ const commentSchema = new Schema(
   { timestamps: true },
 );
 
-const Comment = model('Comment', commentSchema);
-module.exports = Comment;
+export const Comment = model('Comment', commentSchema);
