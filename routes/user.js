@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const User = require('../models/user');
-const {handleSignup} = require('../controllers/user');
+const { handleSignup } = require('../controllers/user');
 
 const router = Router();
 
@@ -16,11 +16,11 @@ router.post('/signin', async (req, res) => {
   console.log('from post sign in', req.body);
   const { email, password } = req.body;
   try {
-  const token = await User.matchPasswordAndGenerateToken(email, password);
-  return res.cookie('token', token).redirect('/');
+    const token = await User.matchPasswordAndGenerateToken(email, password);
+    return res.cookie('token', token).redirect('/');
   } catch (error) {
     return res.render('signin', {
-      error: "Incorrect email or password",
+      error: 'Incorrect email or password',
     });
   }
 });
