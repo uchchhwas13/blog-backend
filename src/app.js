@@ -21,7 +21,7 @@ app.use(checkAuthenticationCookie('token'));
 app.use(express.static(path.resolve('./public')));
 
 app.set('view engine', 'ejs');
-app.set('views', path.resolve('./views'));
+app.set('views', path.resolve('./src/views'));
 
 app.get('/', renderHomePage);
 

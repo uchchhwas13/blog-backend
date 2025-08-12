@@ -7,8 +7,8 @@
   "type": "commonjs",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js",
+    "start": "node ./src/app.js",
+    "dev": "nodemon ./src/app.js",
     "lint": "eslint . --ext .js --max-warnings 0",
     "format": "prettier -w .",
     "format:check": "prettier -c ."
