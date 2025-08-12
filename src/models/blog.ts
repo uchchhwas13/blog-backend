@@ -1,4 +1,4 @@
-import { Document, Schema, model } from 'mongoose';
+import mongoose, { Document, Schema, Model } from 'mongoose';
 
 interface IBlog extends Document {
   title: string;
@@ -29,4 +29,4 @@ const blogSchema: Schema<IBlog> = new Schema(
   { timestamps: true },
 );
 
-export const Blog = model('Blog', blogSchema);
+export const Blog: Model<IBlog> = mongoose.model<IBlog>('Blog', blogSchema);
