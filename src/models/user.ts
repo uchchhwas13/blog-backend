@@ -1,8 +1,18 @@
-const { createHmac, randomBytes } = require('crypto');
-const { Schema, model } = require('mongoose');
-const { generateTokenForUser } = require('../services/authentication');
+import { createHmac, randomBytes } from 'crypto';
+import mongoose, { Schema, Model } from 'mongoose';
+import { generateTokenForUser } from '../services/authentication';
 
-const userSchema = new Schema(
+export interface IUser extends Document {
+  _id: Schema.Types.ObjectId;
+  name: string;
+  email: string;
+  salt: string;
+  password: string;
+  profileImageUrl?: string;
+  role: 'USER' | 'ADMIN';
+}
+
+const userSchema: Schema<IUser> = new Schema(
   {
     name: {
       type: String,
@@ -60,5 +70,4 @@ userSchema.static('matchPasswordAndGenerateToken', async function (email, passwo
   return token;
 });
 
-const User = model('User', userSchema);
-module.exports = User;
+export const Blog: Model<IUser> = mongoose.model<IUser>('User', userSchema);
