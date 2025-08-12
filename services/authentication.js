@@ -1,5 +1,5 @@
 const JWT = require('jsonwebtoken');
-const secret = "cefalo@123";
+const secret = 'cefalo@123';
 
 function generateTokenForUser(user) {
   const payload = {
@@ -12,14 +12,14 @@ function generateTokenForUser(user) {
 }
 
 function verifyToken(token) {
-    const payload = JWT.verify(token, secret);
-    return payload;
-// TODO: Need to handle errors properly    
-//   try {
-//     return JWT.verify(token, secret);
-//   } catch (error) {
-//     return null;
-//   }
+  const payload = JWT.verify(token, secret);
+  return payload;
+  // TODO: Need to handle errors properly
+  //   try {
+  //     return JWT.verify(token, secret);
+  //   } catch (error) {
+  //     return null;
+  //   }
 }
 
 module.exports = {
