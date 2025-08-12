@@ -1,18 +1,19 @@
-const JWT = require('jsonwebtoken');
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import { IUser } from '../models/user';
 const secret = 'cefalo@123';
 
-function generateTokenForUser(user) {
+export const generateTokenForUser = (user: IUser): string => {
   const payload = {
     id: user._id,
     email: user.email,
     profileImageUrl: user.profileImageUrl,
     role: user.role,
   };
-  return JWT.sign(payload, secret);
-}
+  return jwt.sign(payload, secret);
+};
 
-function verifyToken(token) {
-  const payload = JWT.verify(token, secret);
+export function verifyToken(token: string): string | JwtPayload {
+  const payload = jwt.verify(token, secret);
   return payload;
   // TODO: Need to handle errors properly
   //   try {
@@ -21,8 +22,3 @@ function verifyToken(token) {
   //     return null;
   //   }
 }
-
-module.exports = {
-  generateTokenForUser,
-  verifyToken,
-};
