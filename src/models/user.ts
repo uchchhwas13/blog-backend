@@ -70,4 +70,4 @@ userSchema.static('matchPasswordAndGenerateToken', async function (email, passwo
   return token;
 });
 
-export const Blog: Model<IUser> = mongoose.model<IUser>('User', userSchema);
+export const User: Model<IUser> = mongoose.model<IUser>('User', userSchema);
