@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
-import { verifyToken } from '../services/authentication';
+import { verifyToken, UserTokenPayload } from '../services/authentication';
 import type { JwtPayload } from 'jsonwebtoken';
 
 export interface AuthRequest extends Request {
-  user?: string | JwtPayload;
+  user: UserTokenPayload | null;
 }
 
 export function checkAuthenticationCookie(cookieName: string) {
@@ -14,7 +14,7 @@ export function checkAuthenticationCookie(cookieName: string) {
     }
 
     try {
-      const payload: string | JwtPayload = verifyToken(tokenCookieValue);
+      const payload = verifyToken(tokenCookieValue);
       req.user = payload;
     } catch (error) {
       console.error('Token verification failed:', error);
