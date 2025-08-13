@@ -4,6 +4,7 @@ import path from 'path';
 import { Blog, IBlog } from '../models/blog';
 import { Comment } from '../models/comment';
 import { handleAddnewBlog } from '../controllers/addBlog.controller';
+import { handleAddBlogPost } from '../controllers/addBlog.controller';
 import { AuthRequest } from '../middlewares/authentication';
 
 const router = Router();
@@ -61,31 +62,7 @@ router.get('/add-new', handleAddnewBlog);
 //   });
 // });
 
-router.post(
-  '/',
-  upload.single('coverImage'),
-  async (req: Request<{}, {}, IBlog>, res: Response) => {
-    console.log('Request body for adding blog', req.body);
-    console.log('Request user:', req.user);
-    console.log('Uploaded file:', req.file);
-    if (!req.user) {
-      return res.status(401).json({ message: 'Unauthorized' });
-    }
-
-    if (!req.file) {
-      return res.status(400).json({ message: 'Cover image is required' });
-    }
-
-    const blog = await Blog.create({
-      title: req.body.title,
-      body: req.body.body,
-      coverImageUrl: `/uploads/${req.file.filename}`,
-      createdBy: req.user.id,
-    });
-    console.log('Blog created successfully', blog);
-    return res.redirect(`/blog/${blog._id}`);
-  },
-);
+router.post('/', upload.single('coverImage'), handleAddBlogPost);
 
 router.get('/:id', async (req: Request, res: Response) => {
   const blog = await Blog.findById(req.params.id).populate('createdBy');
