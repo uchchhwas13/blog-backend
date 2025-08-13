@@ -1,8 +1,9 @@
-import { Router, Request } from 'express';
+import { Router, Request, Response } from 'express';
 import multer from 'multer';
 import path from 'path';
 import { Blog } from '../models/blog';
 import { Comment } from '../models/comment';
+import { handleAddnewBlog } from '../controllers/addBlog.controller';
 
 const router = Router();
 
@@ -25,6 +26,7 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
+router.get('/add-new', handleAddnewBlog);
 
 // const storage = multer.diskStorage({
 //   destination: function (req: Request, file, cb) {
@@ -38,15 +40,25 @@ const upload = multer({ storage });
 
 // const upload = multer({ storage: storage });
 
-router.get('/add-new', (req, res) => {
-  if (!req.user) {
-    return res.redirect('/user/signin');
-  }
+// router.get('/add-new', (req, res) => {
+//   if (!req.user) {
+//     return res.redirect('/user/signin');
+//   }
 
-  return res.render('addBlog', {
-    user: req.user,
-  });
-});
+//   return res.render('addBlog', {
+//     user: req.user,
+//   });
+// });
+
+// router.get('/add-new', (req: AuthRequest, res: Response) => {
+//   if (!req.user) {
+//     return res.redirect('/user/signin');
+//   }
+
+//   return res.render('addBlog', {
+//     user: req.user,
+//   });
+// });
 
 router.post('/', upload.single('coverImage'), async (req, res) => {
   console.log('Request body for adding blog', req.body);
@@ -85,4 +97,4 @@ router.post('/comment/:blogId', async (req, res) => {
   return res.redirect(`/blog/${req.params.blogId}`);
 });
 
-module.exports = router;
+export default router;
