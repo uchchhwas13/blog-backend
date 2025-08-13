@@ -12,7 +12,11 @@ export interface IUser extends Document {
   role: 'USER' | 'ADMIN';
 }
 
-const userSchema: Schema<IUser> = new Schema(
+interface IUserModel extends Model<IUser> {
+  matchPasswordAndGenerateToken(email: string, password: string): Promise<string>;
+}
+
+const userSchema: Schema<IUser, IUserModel> = new Schema(
   {
     name: {
       type: String,
@@ -55,19 +59,39 @@ userSchema.pre('save', function (next) {
   next();
 });
 
-userSchema.static('matchPasswordAndGenerateToken', async function (email, password) {
-  console.log('Matching password for email:', email);
-  const user = await this.findOne({ email });
-  if (!user) throw new Error('User not found');
+// userSchema.static(
+//   'matchPasswordAndGenerateToken',
+//   async function (email, password): Promise<string> {
+//     console.log('Matching password for email:', email);
+//     const user = await this.findOne({ email });
+//     if (!user) throw new Error('User not found');
 
-  const salt = user.salt;
-  const hashedPassword = user.password;
-  const userProvidedHash = createHmac('sha256', salt).update(password).digest('hex');
+//     const salt = user.salt;
+//     const hashedPassword = user.password;
+//     const userProvidedHash = createHmac('sha256', salt).update(password).digest('hex');
 
-  if (userProvidedHash !== hashedPassword) throw new Error('Incorrect password');
+//     if (userProvidedHash !== hashedPassword) throw new Error('Incorrect password');
 
-  const token = generateTokenForUser(user);
-  return token;
-});
+//     const token = generateTokenForUser(user);
+//     return token;
+//   },
+// );
 
-export const User: Model<IUser> = mongoose.model<IUser>('User', userSchema);
+userSchema.static(
+  'matchPasswordAndGenerateToken',
+  async function (this: IUserModel, email: string, password: string): Promise<string> {
+    console.log('Matching password for email:', email);
+
+    const user = await this.findOne({ email });
+    if (!user) throw new Error('User not found');
+
+    const userProvidedHash = createHmac('sha256', user.salt).update(user.password).digest('hex');
+
+    if (userProvidedHash !== user.password) throw new Error('Incorrect password');
+
+    const token = generateTokenForUser(user);
+    return token;
+  },
+);
+
+export const User = mongoose.model<IUser, IUserModel>('User', userSchema);
