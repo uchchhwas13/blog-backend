@@ -83,10 +83,11 @@ userSchema.static(
     console.log('Matching password for email:', email);
 
     const user = await this.findOne({ email });
+    console.log('Found user:', user);
     if (!user) throw new Error('User not found');
 
-    const userProvidedHash = createHmac('sha256', user.salt).update(user.password).digest('hex');
-
+    const userProvidedHash = createHmac('sha256', user.salt).update(password).digest('hex');
+    console.log('Password matched for user:', userProvidedHash, user.password);
     if (userProvidedHash !== user.password) throw new Error('Incorrect password');
 
     const token = generateTokenForUser(user);
