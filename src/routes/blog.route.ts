@@ -1,22 +1,42 @@
-const { Router } = require('express');
-const multer = require('multer');
-const path = require('path');
-const Blog = require('../models/blog');
-const Comment = require('../models/comment');
+import { Router, Request } from 'express';
+import multer from 'multer';
+import path from 'path';
+import { Blog } from '../models/blog';
+import { Comment } from '../models/comment';
 
 const router = Router();
 
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, path.resolve(`./public/uploads/`));
+  destination: (
+    req: Request,
+    file: Express.Multer.File,
+    cb: (error: Error | null, destination: string) => void,
+  ) => {
+    cb(null, path.resolve('./public/uploads/'));
   },
-  filename: function (req, file, cb) {
+  filename: (
+    req: Request,
+    file: Express.Multer.File,
+    cb: (error: Error | null, filename: string) => void,
+  ) => {
     const fileName = `${Date.now()}-${file.originalname}`;
     cb(null, fileName);
   },
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage });
+
+// const storage = multer.diskStorage({
+//   destination: function (req: Request, file, cb) {
+//     cb(null, path.resolve(`./public/uploads/`));
+//   },
+//   filename: function (req, file, cb) {
+//     const fileName = `${Date.now()}-${file.originalname}`;
+//     cb(null, fileName);
+//   },
+// });
+
+// const upload = multer({ storage: storage });
 
 router.get('/add-new', (req, res) => {
   if (!req.user) {
