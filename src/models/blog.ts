@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema, Model } from 'mongoose';
 
-interface IBlog extends Document {
+export interface IBlog extends Document {
   title: string;
   body: string;
   coverImageUrl?: string;
