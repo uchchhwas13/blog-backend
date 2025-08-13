@@ -1,6 +1,7 @@
 import { Response, Request } from 'express';
 import type { UserTokenPayload } from '../services/authentication';
 import { Blog, IBlog } from '../models/blog';
+import { Comment } from '../models/comment';
 
 declare global {
   namespace Express {
@@ -40,4 +41,29 @@ export const handleAddBlogPost = async (req: Request<{}, {}, IBlog>, res: Respon
   });
   console.log('Blog created successfully', blog);
   return res.redirect(`/blog/${blog._id}`);
+};
+
+export const handleGetBlogDetails = async (req: Request, res: Response) => {
+  const blog = await Blog.findById(req.params.id).populate('createdBy');
+  const comments = await Comment.find({ blogId: req.params.id }).populate('createdBy');
+  console.log('Blog details:', blog);
+  console.log('Comments', comments);
+  return res.render('blogDetails', {
+    user: req.user,
+    blog: blog,
+    comments: comments,
+  });
+};
+
+export const handleAddComment = async (req: Request, res: Response) => {
+  if (!req.user) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+  const comment = await Comment.create({
+    content: req.body.content,
+    createdBy: req.user.id,
+    blogId: req.params.blogId,
+  });
+  console.log('Comment created:', comment);
+  return res.redirect(`/blog/${req.params.blogId}`);
 };

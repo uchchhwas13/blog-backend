@@ -1,11 +1,12 @@
 import { Router, Request, Response } from 'express';
 import multer from 'multer';
 import path from 'path';
-import { Blog, IBlog } from '../models/blog';
-import { Comment } from '../models/comment';
-import { handleAddnewBlog } from '../controllers/addBlog.controller';
-import { handleAddBlogPost } from '../controllers/addBlog.controller';
-import { AuthRequest } from '../middlewares/authentication';
+import {
+  handleAddnewBlog,
+  handleGetBlogDetails,
+  handleAddBlogPost,
+} from '../controllers/blog.controller';
+import { handleAddComment } from '../controllers/comment.controller';
 
 const router = Router();
 
@@ -63,30 +64,7 @@ router.get('/add-new', handleAddnewBlog);
 // });
 
 router.post('/', upload.single('coverImage'), handleAddBlogPost);
-
-router.get('/:id', async (req: Request, res: Response) => {
-  const blog = await Blog.findById(req.params.id).populate('createdBy');
-  const comments = await Comment.find({ blogId: req.params.id }).populate('createdBy');
-  console.log('Blog details:', blog);
-  console.log('Comments', comments);
-  return res.render('blogDetails', {
-    user: req.user,
-    blog: blog,
-    comments: comments,
-  });
-});
-
-router.post('/comment/:blogId', async (req: Request, res: Response) => {
-  if (!req.user) {
-    return res.status(401).json({ message: 'Unauthorized' });
-  }
-  const comment = await Comment.create({
-    content: req.body.content,
-    createdBy: req.user.id,
-    blogId: req.params.blogId,
-  });
-  console.log('Comment created:', comment);
-  return res.redirect(`/blog/${req.params.blogId}`);
-});
+router.get('/:id', handleGetBlogDetails);
+router.post('/comment/:blogId', handleAddComment);
 
 export default router;
