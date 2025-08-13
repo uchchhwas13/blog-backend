@@ -31,7 +31,6 @@ export const handleSignup = async (
       return res.status(400).json({ error: 'All fields are required' });
     }
 
-    // Check if email already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(409).json({ error: 'Email already registered' });
@@ -43,14 +42,7 @@ export const handleSignup = async (
       password,
     });
 
-    return res.status(201).json({
-      message: 'User registered successfully',
-      user: {
-        id: result._id.toString(),
-        name: result.name,
-        email: result.email,
-      },
-    });
+    return res.redirect('/');
   } catch (error) {
     console.error('Signup error:', error);
     return res.status(500).json({ error: 'Internal server error' });
