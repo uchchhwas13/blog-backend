@@ -1,12 +1,8 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { verifyToken, UserTokenPayload } from '../services/authentication';
 
-export interface AuthRequest extends Request {
-  user: UserTokenPayload | null;
-}
-
-export function checkAuthenticationCookie(cookieName: string) {
-  return (req: AuthRequest, res: Response, next: NextFunction): void => {
+export function checkAuthenticationCookie(cookieName: string): RequestHandler {
+  return (req: Request, res: Response, next: NextFunction): void => {
     const tokenCookieValue = req.cookies?.[cookieName];
     if (!tokenCookieValue) {
       return next();
