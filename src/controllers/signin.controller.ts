@@ -13,9 +13,8 @@ export const handleSignin = async (
     console.log('Generated token:', token);
     return res.cookie('token', token).redirect('/');
   } catch (error) {
-    return res.status(401).json({
-      success: false,
-      message: 'Incorrect email or password',
+    return res.render('signin', {
+      error: 'Incorrect email or password',
     });
   }
 };
