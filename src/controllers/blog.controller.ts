@@ -21,7 +21,17 @@ export const renderCreateBlogPage = async (req: Request, res: Response) => {
   });
 };
 
-export const handleAddBlogPost = async (req: Request<{}, {}, IBlog>, res: Response) => {
+export const handleAddBlogPost = async (
+  req: Request<
+    {},
+    {},
+    {
+      title: string;
+      body: string;
+    }
+  >,
+  res: Response,
+) => {
   if (!req.file || !req.user) {
     return res.render('addBlog', {
       error: 'Invalid request',
