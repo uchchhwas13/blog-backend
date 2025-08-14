@@ -11,7 +11,7 @@ declare global {
   }
 }
 
-export const handleAddnewBlog = async (req: Request, res: Response) => {
+export const renderCreateBlogPage = async (req: Request, res: Response) => {
   if (!req.user) {
     return res.redirect('/user/signin');
   }

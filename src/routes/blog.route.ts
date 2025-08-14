@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express';
 import multer from 'multer';
 import path from 'path';
 import {
-  handleAddnewBlog,
+  renderCreateBlogPage,
   handleGetBlogDetails,
   handleAddBlogPost,
 } from '../controllers/blog.controller';
@@ -29,7 +29,7 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
-router.get('/add-new', handleAddnewBlog);
+router.get('/add-new', renderCreateBlogPage);
 router.post('/', upload.single('coverImage'), handleAddBlogPost);
 router.get('/:id', handleGetBlogDetails);
 router.post('/comment/:blogId', handleAddComment);
