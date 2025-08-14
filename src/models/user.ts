@@ -59,24 +59,6 @@ userSchema.pre('save', function (next) {
   next();
 });
 
-// userSchema.static(
-//   'matchPasswordAndGenerateToken',
-//   async function (email, password): Promise<string> {
-//     console.log('Matching password for email:', email);
-//     const user = await this.findOne({ email });
-//     if (!user) throw new Error('User not found');
-
-//     const salt = user.salt;
-//     const hashedPassword = user.password;
-//     const userProvidedHash = createHmac('sha256', salt).update(password).digest('hex');
-
-//     if (userProvidedHash !== hashedPassword) throw new Error('Incorrect password');
-
-//     const token = generateTokenForUser(user);
-//     return token;
-//   },
-// );
-
 userSchema.static(
   'matchPasswordAndGenerateToken',
   async function (this: IUserModel, email: string, password: string): Promise<string> {
@@ -96,3 +78,21 @@ userSchema.static(
 );
 
 export const User = mongoose.model<IUser, IUserModel>('User', userSchema);
+
+// userSchema.static(
+//   'matchPasswordAndGenerateToken',
+//   async function (email, password): Promise<string> {
+//     console.log('Matching password for email:', email);
+//     const user = await this.findOne({ email });
+//     if (!user) throw new Error('User not found');
+
+//     const salt = user.salt;
+//     const hashedPassword = user.password;
+//     const userProvidedHash = createHmac('sha256', salt).update(password).digest('hex');
+
+//     if (userProvidedHash !== hashedPassword) throw new Error('Incorrect password');
+
+//     const token = generateTokenForUser(user);
+//     return token;
+//   },
+// );

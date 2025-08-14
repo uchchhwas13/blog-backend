@@ -13,7 +13,13 @@ userRouter.get('/signup', (req, res) => {
 });
 
 userRouter.post('/signin', handleSignin);
+userRouter.post('/signup', handleSignup);
 
+userRouter.get('/logout', (req, res) => {
+  return res.clearCookie('token').redirect('/');
+});
+
+export default userRouter;
 // router.post('/signin', async (req, res) => {
 //   console.log('from post sign in', req.body);
 //   const { email, password } = req.body;
@@ -26,11 +32,3 @@ userRouter.post('/signin', handleSignin);
 //     });
 //   }
 // });
-
-userRouter.post('/signup', handleSignup);
-
-userRouter.get('/logout', (req, res) => {
-  return res.clearCookie('token').redirect('/');
-});
-
-export default userRouter;
