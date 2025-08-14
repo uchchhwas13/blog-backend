@@ -22,16 +22,9 @@ export const renderCreateBlogPage = async (req: Request, res: Response) => {
 };
 
 export const handleAddBlogPost = async (req: Request<{}, {}, IBlog>, res: Response) => {
-  console.log('Request body for adding blog', req.body);
-  console.log('Request user:', req.user);
-  console.log('Uploaded file:', req.file);
-  if (!req.user) {
-    return res.status(401).json({ message: 'Unauthorized' });
-  }
-
-  if (!req.body.title || !req.body.body || !req.file) {
+  if (!req.file || !req.user) {
     return res.render('addBlog', {
-      error: 'All fields are required',
+      error: 'Invalid request',
     });
   }
 
