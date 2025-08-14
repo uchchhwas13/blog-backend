@@ -3,7 +3,7 @@ import express from 'express';
 import path from 'path';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
-import { renderHomePage } from './controllers/app';
+import { renderHomePage } from './controllers/home.controller';
 
 import userRouter from './routes/user.route';
 import blogRouter from './routes/blog.route';
