@@ -31,6 +31,6 @@ app.set('views', path.resolve('./src/views'));
 app.get('/', renderHomePage);
 
 app.use('/user', userRouter);
-app.use('/blog', blogRouter);
+app.use('/blogs', blogRouter);
 
 app.listen(PORT, () => console.log(`Server is running on http://localhost:${PORT}`));

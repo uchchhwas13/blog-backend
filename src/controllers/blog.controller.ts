@@ -1,7 +1,7 @@
 import { Response, Request } from 'express';
 import type { UserTokenPayload } from '../services/authentication';
 import { Blog, IBlog } from '../models/blog';
-import { Comment } from '../models/comment';
+import { Comment, IComment } from '../models/comment';
 
 declare global {
   namespace Express {
@@ -10,6 +10,12 @@ declare global {
     }
   }
 }
+
+type BlogWithCommentsSuccessResponse = {
+  blog: IBlog;
+  comments: IComment[];
+};
+type BlogWithCommentsResponse = BlogWithCommentsSuccessResponse | { error: string };
 
 export const renderCreateBlogPage = async (req: Request, res: Response) => {
   if (!req.user) {
@@ -48,16 +54,28 @@ export const handleAddBlogPost = async (
   return res.redirect(`/blog/${blog._id}`);
 };
 
-export const handleGetBlogDetails = async (req: Request<{ id: string }, {}, {}>, res: Response) => {
-  const blog = await Blog.findById(req.params.id).populate('createdBy');
-  const comments = await Comment.find({ blogId: req.params.id }).populate('createdBy');
-  console.log('Blog details:', blog);
-  console.log('Comments', comments);
-  return res.render('blogDetails', {
-    user: req.user,
-    blog: blog,
-    comments: comments,
-  });
+export const handleGetBlogDetails = async (
+  req: Request<{ id: string }, {}, {}>,
+  res: Response<BlogWithCommentsResponse>,
+) => {
+  try {
+    const blog = await Blog.findById(req.params.id).populate('createdBy');
+    if (!blog) {
+      return res.status(404).json({ error: 'Blog not found' });
+    }
+
+    const comments = await Comment.find({ blogId: req.params.id })
+      .populate('createdBy')
+      .sort({ createdAt: -1 });
+
+    return res.json({
+      blog,
+      comments,
+    });
+  } catch (error) {
+    console.error('Error fetching blog details:', error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
 };
 
 export const handleAddComment = async (req: Request, res: Response) => {
