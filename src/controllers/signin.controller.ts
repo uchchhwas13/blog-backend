@@ -16,6 +16,9 @@ export const handleSignin = async (
     return res.render('signin', {
       error: 'Incorrect email or password',
     });
+    // return res.status(401).json({
+    //   success: false,
+    //   message: 'Incorrect email or password'});
   }
 };
 

@@ -33,7 +33,10 @@ export const handleSignup = async (
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(409).json({ error: 'Email already registered' });
+      //return res.status(409).json({ error: 'Email already registered' });
+      return res.render('signup', {
+        error: 'Duplicate email. Please try another one.',
+      });
     }
 
     const result = await User.create({
