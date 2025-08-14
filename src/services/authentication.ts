@@ -7,7 +7,6 @@ const userTokenPayloadSchema = z.object({
   id: z.string(),
   name: z.string(),
   email: z.string(),
-  profileImageUrl: z.string().optional(),
   role: z.string(),
 });
 
@@ -18,7 +17,6 @@ export const generateTokenForUser = (user: IUser): string => {
     id: user._id.toString(),
     name: user.name,
     email: user.email,
-    profileImageUrl: user.profileImageUrl,
     role: user.role,
   };
   return jwt.sign(payload, secret);
