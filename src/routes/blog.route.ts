@@ -30,6 +30,11 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 router.get('/add-new', handleAddnewBlog);
+router.post('/', upload.single('coverImage'), handleAddBlogPost);
+router.get('/:id', handleGetBlogDetails);
+router.post('/comment/:blogId', handleAddComment);
+
+export default router;
 
 // const storage = multer.diskStorage({
 //   destination: function (req: Request, file, cb) {
@@ -62,9 +67,3 @@ router.get('/add-new', handleAddnewBlog);
 //     user: req.user,
 //   });
 // });
-
-router.post('/', upload.single('coverImage'), handleAddBlogPost);
-router.get('/:id', handleGetBlogDetails);
-router.post('/comment/:blogId', handleAddComment);
-
-export default router;
