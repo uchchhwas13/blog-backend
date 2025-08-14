@@ -5,6 +5,7 @@ const secret = 'cefalo@123';
 
 const userTokenPayloadSchema = z.object({
   id: z.string(),
+  name: z.string(),
   email: z.string(),
   profileImageUrl: z.string().optional(),
   role: z.string(),
@@ -15,6 +16,7 @@ export type UserTokenPayload = z.infer<typeof userTokenPayloadSchema>;
 export const generateTokenForUser = (user: IUser): string => {
   const payload: UserTokenPayload = {
     id: user._id.toString(),
+    name: user.name,
     email: user.email,
     profileImageUrl: user.profileImageUrl,
     role: user.role,
