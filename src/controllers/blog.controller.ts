@@ -29,8 +29,10 @@ export const handleAddBlogPost = async (req: Request<{}, {}, IBlog>, res: Respon
     return res.status(401).json({ message: 'Unauthorized' });
   }
 
-  if (!req.file) {
-    return res.status(400).json({ message: 'Cover image is required' });
+  if (!req.body.title || !req.body.body || !req.file) {
+    return res.render('addBlog', {
+      error: 'All fields are required',
+    });
   }
 
   const blog = await Blog.create({
