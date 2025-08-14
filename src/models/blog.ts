@@ -3,11 +3,11 @@ import mongoose, { Document, Schema, Model } from 'mongoose';
 export interface IBlog extends Document {
   title: string;
   body: string;
-  coverImageUrl?: string;
+  coverImageUrl: string;
   createdBy: Schema.Types.ObjectId;
 }
 
-const blogSchema: Schema<IBlog> = new Schema(
+const blogSchema = new Schema<IBlog>(
   {
     title: {
       type: String,
