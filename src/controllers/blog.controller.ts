@@ -48,7 +48,7 @@ export const handleAddBlogPost = async (
   return res.redirect(`/blog/${blog._id}`);
 };
 
-export const handleGetBlogDetails = async (req: Request, res: Response) => {
+export const handleGetBlogDetails = async (req: Request<{ id: string }, {}, {}>, res: Response) => {
   const blog = await Blog.findById(req.params.id).populate('createdBy');
   const comments = await Comment.find({ blogId: req.params.id }).populate('createdBy');
   console.log('Blog details:', blog);
