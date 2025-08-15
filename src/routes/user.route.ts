@@ -16,7 +16,7 @@ userRouter.post('/signin', handleSignin);
 userRouter.post('/signup', handleSignup);
 
 userRouter.get('/logout', (req, res) => {
-  return res.clearCookie('token').redirect('/');
+  return res.clearCookie('accessToken').redirect('/');
 });
 
 export default userRouter;

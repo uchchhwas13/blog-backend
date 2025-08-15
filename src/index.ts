@@ -23,7 +23,7 @@ mongoose.connect(process.env.MONGO_URL).then(() => console.log('Connected to Mon
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cookieParser());
-app.use(checkAuthenticationCookie('token'));
+app.use(checkAuthenticationCookie('accessToken'));
 app.use(express.static(path.resolve('./public')));
 
 app.set('view engine', 'ejs');

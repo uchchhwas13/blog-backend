@@ -4,6 +4,7 @@ import { verifyToken, UserTokenPayload } from '../services/authentication';
 export function checkAuthenticationCookie(cookieName: string): RequestHandler {
   return (req: Request, res: Response, next: NextFunction): void => {
     const tokenCookieValue = req.cookies?.[cookieName];
+    console.log('Token cookie value:', tokenCookieValue);
     if (!tokenCookieValue) {
       return next();
     }
