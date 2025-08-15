@@ -1,6 +1,10 @@
 import { User } from '../models/user';
 import { Request, Response } from 'express';
 import { AuthPayload, SigninResponse } from '../types/auth.types';
+import jwt from 'jsonwebtoken';
+import { verifyRefreshToken } from '../services/authentication';
+import { ApiError } from '../utils/ApiError';
+
 const accessTokenCookieOptions = {
   httpOnly: true,
   secure: false, // true if HTTPS
@@ -81,4 +85,49 @@ export const logoutUser = async (req: Request, res: Response) => {
     .clearCookie('accessToken', accessTokenCookieOptions)
     .clearCookie('refreshToken', refreshTokenCookieOptions)
     .json({ success: true, message: 'User logged Out' });
+};
+
+export const handleRefreshAccessToken = async (req: Request, res: Response) => {
+  const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken;
+  const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;
+
+  if (!refreshTokenSecret) {
+    throw new ApiError(500, 'Internal server error');
+  }
+
+  if (!incomingRefreshToken) {
+    throw new ApiError(401, 'Invalid refresh token');
+  }
+
+  try {
+    const decodedToken = verifyRefreshToken(incomingRefreshToken);
+    if (!decodedToken) {
+      throw new ApiError(401, 'Invalid refresh token');
+    }
+
+    const user = await User.findById(decodedToken.id);
+
+    if (!user) {
+      throw new ApiError(401, 'Invalid refresh token');
+    }
+
+    if (incomingRefreshToken !== user.refreshToken) {
+      throw new ApiError(401, 'Refresh token is expired or used');
+    }
+
+    const accessToken = user.generateAccessToken();
+    const refreshToken = user.generateRefreshToken();
+    user.refreshToken = refreshToken;
+    await user.save({ validateBeforeSave: false });
+    return res
+      .status(200)
+      .cookie('accessToken', accessToken, accessTokenCookieOptions)
+      .cookie('refreshToken', refreshToken, refreshTokenCookieOptions)
+      .json({
+        data: { accessToken, refreshToken },
+        message: 'Access token refreshed',
+      });
+  } catch (error) {
+    throw new ApiError(401, 'Invalid refresh token');
+  }
 };
