@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
-import { verifyAccessToken } from '../services/authentication.middleware';
+import { verifyAccessToken } from '../services/authentication';
 import { User } from '../models/user';
 
 export function authenticateRequest(cookieName: string): RequestHandler {

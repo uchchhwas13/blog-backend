@@ -8,7 +8,7 @@ import { renderHomePage } from './controllers/home.controller';
 import userRouter from './routes/user.route';
 import blogRouter from './routes/blog.route';
 
-import { authenticateRequest } from './middlewares/authentication';
+import { authenticateRequest } from './middlewares/authentication.middleware';
 
 const app = express();
 const PORT = process.env.PORT;
