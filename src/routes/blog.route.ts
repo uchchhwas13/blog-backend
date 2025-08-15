@@ -7,7 +7,7 @@ import {
   handleAddBlogPost,
 } from '../controllers/blog.controller';
 import { handleAddComment } from '../controllers/comment.controller';
-import { validateBlog } from '../middlewares/validateBlog';
+import { validateBlog } from '../middlewares/validateBlog.middleware';
 import { authenticateRequest } from '../middlewares/authentication.middleware';
 
 const router = Router();

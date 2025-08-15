@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { z, ZodType } from 'zod';
+import { blogTextSchema, blogFileSchema } from '../validations/blogSchema';
 
 export function validateBody<T extends ZodType>(schema: T) {
   return (req: Request, res: Response, next: NextFunction) => {
@@ -12,19 +13,6 @@ export function validateBody<T extends ZodType>(schema: T) {
     next();
   };
 }
-
-const blogTextSchema = z.object({
-  title: z.string().min(1, 'Title is required'),
-  body: z.string().min(1, 'Content is required'),
-});
-
-const blogFileSchema = z.object({
-  originalname: z.string().min(1),
-  mimetype: z.string().regex(/^image\//, 'File must be an image'),
-  size: z.number().max(5 * 1024 * 1024, 'File size must be <= 5MB'),
-  filename: z.string().min(1),
-  path: z.string().min(1),
-});
 
 export const validateBlog = (req: Request, res: Response, next: NextFunction) => {
   if (!req.user) {
