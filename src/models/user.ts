@@ -1,6 +1,7 @@
 import { createHmac, randomBytes } from 'crypto';
-import mongoose, { Schema, Model } from 'mongoose';
-import { generateTokenForUser } from '../services/authentication';
+import mongoose, { Schema } from 'mongoose';
+import jwt from 'jsonwebtoken';
+require('dotenv').config();
 
 export interface IUser extends Document {
   _id: Schema.Types.ObjectId;
@@ -10,13 +11,13 @@ export interface IUser extends Document {
   password: string;
   profileImageUrl?: string;
   role: 'USER' | 'ADMIN';
+  refreshToken: string;
+  matchPassword(user: IUser, password: string): void;
+  generateAccessToken(): string;
+  generateRefreshToken(): string;
 }
 
-interface IUserModel extends Model<IUser> {
-  matchPasswordAndGenerateToken(email: string, password: string): Promise<string>;
-}
-
-const userSchema: Schema<IUser, IUserModel> = new Schema(
+const userSchema = new Schema<IUser>(
   {
     name: {
       type: String,
@@ -43,6 +44,9 @@ const userSchema: Schema<IUser, IUserModel> = new Schema(
       enum: ['USER', 'ADMIN'],
       default: 'USER',
     },
+    refreshToken: {
+      type: String,
+    },
   },
   { timestamps: true },
 );
@@ -59,25 +63,7 @@ userSchema.pre('save', function (next) {
   next();
 });
 
-userSchema.static(
-  'matchPasswordAndGenerateToken',
-  async function (this: IUserModel, email: string, password: string): Promise<string> {
-    console.log('Matching password for email:', email);
-
-    const user = await this.findOne({ email });
-    console.log('Found user:', user);
-    if (!user) throw new Error('User not found');
-
-    const userProvidedHash = createHmac('sha256', user.salt).update(password).digest('hex');
-    console.log('Password matched for user:', userProvidedHash, user.password);
-    if (userProvidedHash !== user.password) throw new Error('Incorrect password');
-
-    const token = generateTokenForUser(user);
-    return token;
-  },
-);
-
-export const User = mongoose.model<IUser, IUserModel>('User', userSchema);
+export const User = mongoose.model<IUser>('User', userSchema);
 
 // userSchema.static(
 //   'matchPasswordAndGenerateToken',
