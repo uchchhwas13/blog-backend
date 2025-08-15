@@ -17,7 +17,8 @@ export const handleSignin = async (
   res: Response<SigninResponse>,
 ) => {
   const { email, password } = req.body;
-  const user = await User.findOne({ email });
+  const trimmedEmail = email.trim();
+  const user = await User.findOne({ trimmedEmail });
   if (!user) {
     return res.status(404).json({
       success: false,
@@ -57,16 +58,3 @@ export const handleSignin = async (
     });
   }
 };
-
-// router.post('/signin', async (req, res) => {
-//   console.log('from post sign in', req.body);
-//   const { email, password } = req.body;
-//   try {
-//     const token = await User.matchPasswordAndGenerateToken(email, password);
-//     return res.cookie('token', token).redirect('/');
-//   } catch (error) {
-//     return res.render('signin', {
-//       error: 'Incorrect email or password',
-//     });
-//   }
-// });

@@ -3,18 +3,11 @@ import { handleSignup } from '../controllers/signup.controller';
 import { handleSignin } from '../controllers/signin.controller';
 import { validateBody } from '../middlewares/validateBlog.middleware';
 import { signupSchema } from '../validations/signupSchema';
+import { signinSchema } from '../validations/signinSchema';
+
 const userRouter = Router();
-//TODO: Need to move this into frontend
-userRouter.get('/signin', (req, res) => {
-  return res.render('signin');
-});
 
-//TODO: Need to move this into frontend
-userRouter.get('/signup', (req, res) => {
-  return res.render('signup');
-});
-
-userRouter.post('/signin', handleSignin);
+userRouter.post('/signin', validateBody(signinSchema), handleSignin);
 userRouter.post('/signup', validateBody(signupSchema), handleSignup);
 
 userRouter.get('/logout', (req, res) => {
