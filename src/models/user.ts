@@ -100,7 +100,7 @@ userSchema.methods.generateRefreshToken = function (): string {
   }
   return jwt.sign(
     {
-      _id: this._id,
+      id: this._id,
     },
     secret,
     {
