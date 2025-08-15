@@ -4,13 +4,13 @@ import { User } from '../models/user';
 
 export function authenticateRequest(cookieName: string): RequestHandler {
   return async (req: Request, _: Response, next: NextFunction): Promise<void> => {
-    const tokenCookieValue = req.cookies?.[cookieName] || req.headers?.authorization?.split(' ')[1];
-    console.log('Token cookie value:', tokenCookieValue);
+    const token = req.cookies?.[cookieName] || req.headers?.authorization?.split(' ')[1];
+    console.log('Token cookie value:', token);
     try {
-      if (!tokenCookieValue) {
-        throw new Error('Unauthorized request');
+      if (!token) {
+        return next();
       }
-      const payload = verifyAccessToken(tokenCookieValue);
+      const payload = verifyAccessToken(token);
       const user = await User.findById(payload?.id).select('-password -refreshToken');
 
       if (!user) {
