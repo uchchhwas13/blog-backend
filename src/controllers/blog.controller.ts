@@ -1,5 +1,5 @@
 import { Response, Request } from 'express';
-import type { UserTokenPayload } from '../services/authentication';
+import type { UserTokenPayload } from '../services/authentication.middleware';
 import { Blog, IBlog } from '../models/blog';
 import { Comment, IComment } from '../models/comment';
 

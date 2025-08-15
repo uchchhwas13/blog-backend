@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
-import { verifyAccessToken } from '../services/authentication';
+import { verifyAccessToken } from '../services/authentication.middleware';
 import { User } from '../models/user';
 
 export function checkAuthenticationCookie(cookieName: string): RequestHandler {
