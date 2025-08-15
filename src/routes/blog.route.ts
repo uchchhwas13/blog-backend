@@ -8,6 +8,7 @@ import {
 } from '../controllers/blog.controller';
 import { handleAddComment } from '../controllers/comment.controller';
 import { validateBlog } from '../middlewares/validateBlog';
+import { authenticateRequest } from '../middlewares/authentication';
 
 const router = Router();
 
@@ -31,9 +32,15 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 router.get('/add-new', renderCreateBlogPage);
-router.post('/', upload.single('coverImage'), validateBlog, handleAddBlogPost);
+router.post(
+  '/',
+  authenticateRequest('accessToken'),
+  upload.single('coverImage'),
+  validateBlog,
+  handleAddBlogPost,
+);
 router.get('/:id', handleGetBlogDetails);
-router.post('/comment/:blogId', handleAddComment);
+router.post('/comment/:blogId', authenticateRequest('accessToken'), handleAddComment);
 
 export default router;
 

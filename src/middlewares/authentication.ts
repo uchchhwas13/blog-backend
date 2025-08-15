@@ -2,7 +2,7 @@ import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { verifyAccessToken } from '../services/authentication.middleware';
 import { User } from '../models/user';
 
-export function checkAuthenticationCookie(cookieName: string): RequestHandler {
+export function authenticateRequest(cookieName: string): RequestHandler {
   return async (req: Request, _: Response, next: NextFunction): Promise<void> => {
     const tokenCookieValue = req.cookies?.[cookieName] || req.headers?.authorization?.split(' ')[1];
     console.log('Token cookie value:', tokenCookieValue);
