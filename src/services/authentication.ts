@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import jwt from 'jsonwebtoken';
-import { IUser } from '../models/user';
 
 const userTokenPayloadSchema = z.object({
   id: z.string(),
@@ -9,23 +8,38 @@ const userTokenPayloadSchema = z.object({
   role: z.string(),
 });
 
-export type UserTokenPayload = z.infer<typeof userTokenPayloadSchema>;
+const refreshTokenPayloadSchema = z.object({
+  id: z.string(),
+});
 
-// export const generateTokenForUser = (user: IUser): string => {
-//   const payload: UserTokenPayload = {
-//     id: user._id.toString(),
-//     name: user.name,
-//     email: user.email,
-//     role: user.role,
-//   };
-//   return jwt.sign(payload, secret);
-// };
+export type UserTokenPayload = z.infer<typeof userTokenPayloadSchema>;
+export type RefreshTokenPayload = z.infer<typeof refreshTokenPayloadSchema>;
 
 export function verifyAccessToken(token: string): UserTokenPayload | null {
   const secret = process.env.ACCESS_TOKEN_SECRET!;
   try {
     const decoded = jwt.verify(token, secret);
     const parsed = userTokenPayloadSchema.safeParse(decoded);
+    if (parsed.success) {
+      return parsed.data;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+export function verifyRefreshToken(token: string): RefreshTokenPayload | null {
+  const secret = process.env.REFRESH_TOKEN_SECRET;
+
+  if (!secret) {
+    throw new Error('REFRESH_TOKEN_SECRET is not defined');
+  }
+
+  try {
+    const decoded = jwt.verify(token, secret);
+    const parsed = refreshTokenPayloadSchema.safeParse(decoded);
+
     if (parsed.success) {
       return parsed.data;
     }
