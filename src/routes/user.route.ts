@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import { handleSignup } from '../controllers/signup.controller';
 import { handleSignin } from '../controllers/signin.controller';
+import { validateBody } from '../middlewares/validateBlog.middleware';
+import { signupSchema } from '../validations/signupSchema';
 const userRouter = Router();
 //TODO: Need to move this into frontend
 userRouter.get('/signin', (req, res) => {
@@ -13,7 +15,7 @@ userRouter.get('/signup', (req, res) => {
 });
 
 userRouter.post('/signin', handleSignin);
-userRouter.post('/signup', handleSignup);
+userRouter.post('/signup', validateBody(signupSchema), handleSignup);
 
 userRouter.get('/logout', (req, res) => {
   return res.clearCookie('accessToken').redirect('/');

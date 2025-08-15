@@ -1,17 +1,28 @@
 import { Request, Response, NextFunction } from 'express';
-import { z, ZodType } from 'zod';
+import { z, ZodType, ZodError } from 'zod';
 import { blogTextSchema, blogFileSchema } from '../validations/blogSchema';
 
 export function validateBody<T extends ZodType>(schema: T) {
   return (req: Request, res: Response, next: NextFunction) => {
     const result = schema.safeParse(req.body);
     if (!result.success) {
-      console.error('Validation error:', result.error);
-      return res.status(400).json({ error: z.treeifyError(result.error) });
+      const simplifiedErrors = formatZodError(result.error);
+      return res.status(400).json({
+        error: 'Validation failed',
+        details: simplifiedErrors,
+      });
     }
-    req.body = result.data;
     next();
   };
+}
+
+function formatZodError(error: ZodError) {
+  return error._zod.def.map((err) => {
+    return {
+      field: err.path.join('.'),
+      message: err.message,
+    };
+  });
 }
 
 export const validateBlog = (req: Request, res: Response, next: NextFunction) => {
