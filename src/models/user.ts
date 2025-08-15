@@ -70,6 +70,7 @@ userSchema.methods.matchPassword = function (user: IUser, password: string) {
   console.log('Password matched for user:', userProvidedHash, user.password);
   if (userProvidedHash !== user.password) throw new Error('Incorrect password');
 };
+
 userSchema.methods.generateAccessToken = function (this: IUser): string {
   const secret = process.env.ACCESS_TOKEN_SECRET;
   const expiryDuration = 2 * 60;
@@ -80,7 +81,7 @@ userSchema.methods.generateAccessToken = function (this: IUser): string {
 
   return jwt.sign(
     {
-      _id: this._id,
+      id: this._id,
       email: this.email,
       name: this.name,
       role: this.role,
