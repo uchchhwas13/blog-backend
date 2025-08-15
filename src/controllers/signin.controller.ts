@@ -18,7 +18,7 @@ export const handleSignin = async (
 ) => {
   const { email, password } = req.body;
   const trimmedEmail = email.trim();
-  const user = await User.findOne({ trimmedEmail });
+  const user = await User.findOne({ email: trimmedEmail });
   if (!user) {
     return res.status(404).json({
       success: false,
@@ -57,4 +57,28 @@ export const handleSignin = async (
       message: 'Incorrect email or password',
     });
   }
+};
+
+export const logoutUser = async (req: Request, res: Response) => {
+  if (!req.user) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+
+  await User.findByIdAndUpdate(
+    req.user.id,
+    {
+      $unset: {
+        refreshToken: 1, // this removes the field from document
+      },
+    },
+    {
+      new: true,
+    },
+  );
+  req.user = null;
+  return res
+    .status(200)
+    .clearCookie('accessToken', accessTokenCookieOptions)
+    .clearCookie('refreshToken', refreshTokenCookieOptions)
+    .json({ success: true, message: 'User logged Out' });
 };
