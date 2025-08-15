@@ -9,10 +9,12 @@ type SignupPayload = {
 
 type SignupResponse = {
   message: string;
-  user: {
-    id: string;
-    name: string;
-    email: string;
+  data: {
+    user: {
+      id: string;
+      name: string;
+      email: string;
+    };
   };
 };
 
@@ -33,10 +35,7 @@ export const handleSignup = async (
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      //return res.status(409).json({ error: 'Email already registered' });
-      return res.render('signup', {
-        error: 'Duplicate email. Please try another one.',
-      });
+      return res.status(409).json({ error: 'Email already registered' });
     }
 
     const result = await User.create({
@@ -45,7 +44,16 @@ export const handleSignup = async (
       password,
     });
 
-    return res.redirect('/');
+    return res.status(201).json({
+      message: 'User registered successfully',
+      data: {
+        user: {
+          id: result._id.toString(),
+          name: result.name,
+          email: result.email,
+        },
+      },
+    });
   } catch (error) {
     console.error('Signup error:', error);
     return res.status(500).json({ error: 'Internal server error' });
