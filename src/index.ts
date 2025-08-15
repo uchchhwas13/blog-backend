@@ -21,6 +21,7 @@ if (!process.env.MONGO_URL) {
 mongoose.connect(process.env.MONGO_URL).then(() => console.log('Connected to MongoDB'));
 
 app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 app.use(cookieParser());
 app.use(checkAuthenticationCookie('token'));
 app.use(express.static(path.resolve('./public')));
