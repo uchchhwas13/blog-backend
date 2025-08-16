@@ -25,4 +25,22 @@ type UserData = {
   role: string;
 };
 
+export type SignupPayload = {
+  fullname: string;
+  email: string;
+  password: string;
+};
+
+export type SignupSuccessResponse = {
+  message: string;
+  data: {
+    user: {
+      id: string;
+      name: string;
+      email: string;
+    };
+  };
+};
+
 export type SigninResponse = SigninSuccessResponse | ErrorResponse;
+export type SignupResponse = SignupSuccessResponse | ErrorResponse;
