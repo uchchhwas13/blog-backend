@@ -16,7 +16,7 @@ export function validateBody<T extends ZodType>(schema: T) {
   };
 }
 
-function formatZodError(error: ZodError) {
+export function formatZodError(error: ZodError) {
   return error._zod.def.map((err) => {
     return {
       field: err.path.join('.'),
@@ -40,7 +40,11 @@ export const validateBlog = (req: Request, res: Response, next: NextFunction) =>
     next();
   } catch (err) {
     if (err instanceof z.ZodError) {
-      return res.status(400).json({ errors: z.treeifyError(err) });
+      const simplifiedErrors = formatZodError(err);
+      return res.status(400).json({
+        error: 'Validation failed',
+        details: simplifiedErrors,
+      });
     }
     return res.status(400).json({ error: err instanceof Error ? err.message : 'Invalid request' });
   }
