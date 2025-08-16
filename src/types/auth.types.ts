@@ -13,7 +13,7 @@ export type SigninSuccessResponse = {
   };
 };
 
-export type SigninErrorResponse = {
+export type ErrorResponse = {
   success: false;
   message: string;
 };
@@ -25,4 +25,4 @@ type UserData = {
   role: string;
 };
 
-export type SigninResponse = SigninSuccessResponse | SigninErrorResponse;
+export type SigninResponse = SigninSuccessResponse | ErrorResponse;

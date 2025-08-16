@@ -1,7 +1,8 @@
 import { Response, Request } from 'express';
 import type { UserTokenPayload } from '../services/authentication';
-import { Blog, IBlog } from '../models/blog';
-import { Comment, IComment } from '../models/comment';
+import { Blog } from '../models/blog';
+import { Comment } from '../models/comment';
+import { AddBlogPostPayload, BlogWithCommentsResponse } from '../types/blog.type';
 
 declare global {
   namespace Express {
@@ -11,36 +12,21 @@ declare global {
   }
 }
 
-type BlogWithCommentsSuccessResponse = {
-  blog: IBlog;
-  comments: IComment[];
-};
-type BlogWithCommentsResponse = BlogWithCommentsSuccessResponse | { error: string };
-
-export const renderCreateBlogPage = async (req: Request, res: Response) => {
-  if (!req.user) {
-    return res.redirect('/user/signin');
-  }
-
-  return res.render('addBlog', {
-    user: req.user,
-  });
-};
-
 export const handleAddBlogPost = async (
-  req: Request<
-    {},
-    {},
-    {
-      title: string;
-      body: string;
-    }
-  >,
+  req: Request<{}, {}, AddBlogPostPayload>,
   res: Response,
 ) => {
-  if (!req.file || !req.user) {
-    return res.render('addBlog', {
-      error: 'Invalid request',
+  if (!req.user) {
+    return res.status(401).json({
+      success: false,
+      message: 'User not authenticated',
+    });
+  }
+
+  if (!req.file) {
+    return res.status(400).json({
+      success: false,
+      message: 'File upload failed',
     });
   }
 
@@ -51,7 +37,23 @@ export const handleAddBlogPost = async (
     createdBy: req.user.id,
   });
   console.log('Blog created successfully', blog);
-  return res.redirect(`/blog/${blog._id}`);
+  return res.status(201).json({
+    success: true,
+    message: 'Blog post created successfully',
+    data: {
+      blog: {
+        id: blog._id.toString(),
+        title: blog.title,
+        body: blog.body,
+        coverImageUrl: blog.coverImageUrl,
+        createdBy: {
+          id: req.user.id,
+          name: req.user.name,
+        },
+        createdAt: blog.createdAt,
+      },
+    },
+  });
 };
 
 export const handleGetBlogDetails = async (
@@ -61,7 +63,7 @@ export const handleGetBlogDetails = async (
   try {
     const blog = await Blog.findById(req.params.id).populate('createdBy');
     if (!blog) {
-      return res.status(404).json({ error: 'Blog not found' });
+      return res.status(404).json({ success: false, message: 'Blog not found' });
     }
 
     const comments = await Comment.find({ blogId: req.params.id })
@@ -69,24 +71,15 @@ export const handleGetBlogDetails = async (
       .sort({ createdAt: -1 });
 
     return res.json({
-      blog,
-      comments,
+      message: 'Blog details fetched successfully',
+      success: true,
+      data: {
+        blog,
+        comments,
+      },
     });
   } catch (error) {
     console.error('Error fetching blog details:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ success: false, message: 'Internal server error' });
   }
-};
-
-export const handleAddComment = async (req: Request, res: Response) => {
-  if (!req.user) {
-    return res.status(401).json({ message: 'Unauthorized' });
-  }
-  const comment = await Comment.create({
-    content: req.body.content,
-    createdBy: req.user.id,
-    blogId: req.params.blogId,
-  });
-  console.log('Comment created:', comment);
-  return res.redirect(`/blog/${req.params.blogId}`);
 };

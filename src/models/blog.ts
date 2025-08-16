@@ -1,10 +1,13 @@
 import mongoose, { Document, Schema, Model } from 'mongoose';
 
 export interface IBlog extends Document {
+  _id: Schema.Types.ObjectId;
   title: string;
   body: string;
   coverImageUrl: string;
   createdBy: Schema.Types.ObjectId;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const blogSchema = new Schema<IBlog>(

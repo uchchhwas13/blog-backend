@@ -1,3 +1,6 @@
+import { ErrorResponse } from './auth.types';
+import { IBlog } from '../models/blog';
+import { IComment } from '../models/comment';
 export type CommentSuccessResponse = {
   message: string;
   success: boolean;
@@ -15,9 +18,19 @@ export type CommentSuccessResponse = {
   };
 };
 
-export type CommentErrorResponse = {
-  success: false;
-  message: string;
-};
+export type CommentResponse = CommentSuccessResponse | ErrorResponse;
 
-export type CommentResponse = CommentSuccessResponse | CommentErrorResponse;
+type BlogWithCommentsSuccessResponse = {
+  success: true;
+  message: string;
+  data: {
+    blog: IBlog;
+    comments: IComment[];
+  };
+};
+export type BlogWithCommentsResponse = BlogWithCommentsSuccessResponse | ErrorResponse;
+
+export type AddBlogPostPayload = {
+  title: string;
+  body: string;
+};
