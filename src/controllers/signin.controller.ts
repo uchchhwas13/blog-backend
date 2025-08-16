@@ -87,47 +87,59 @@ export const logoutUser = async (req: Request, res: Response) => {
     .json({ success: true, message: 'User logged Out' });
 };
 
-export const handleRefreshAccessToken = async (req: Request, res: Response) => {
-  const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken;
-  const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;
+import { RequestHandler } from 'express';
 
-  if (!refreshTokenSecret) {
-    throw new ApiError(500, 'Internal server error');
-  }
-
-  if (!incomingRefreshToken) {
-    throw new ApiError(401, 'Invalid refresh token');
-  }
-
-  try {
-    const decodedToken = verifyRefreshToken(incomingRefreshToken);
-    if (!decodedToken) {
-      throw new ApiError(401, 'Invalid refresh token');
-    }
-
-    const user = await User.findById(decodedToken.id);
-
-    if (!user) {
-      throw new ApiError(401, 'Invalid refresh token');
-    }
-
-    if (incomingRefreshToken !== user.refreshToken) {
-      throw new ApiError(401, 'Refresh token is expired or used');
-    }
-
-    const accessToken = user.generateAccessToken();
-    const refreshToken = user.generateRefreshToken();
-    user.refreshToken = refreshToken;
-    await user.save({ validateBeforeSave: false });
-    return res
-      .status(200)
-      .cookie('accessToken', accessToken, accessTokenCookieOptions)
-      .cookie('refreshToken', refreshToken, refreshTokenCookieOptions)
-      .json({
-        data: { accessToken, refreshToken },
-        message: 'Access token refreshed',
-      });
-  } catch (error) {
-    throw new ApiError(401, 'Invalid refresh token');
-  }
+export const asyncHandler = (requestHandler: RequestHandler): RequestHandler => {
+  return (req, res, next) => {
+    Promise.resolve(requestHandler(req, res, next)).catch(next);
+  };
 };
+
+export const handleRefreshAccessToken = asyncHandler(
+  async (req: Request<{}, {}, { refreshToken: string }>, res: Response) => {
+    const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken;
+    const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;
+
+    if (!refreshTokenSecret) {
+      throw new ApiError(500, 'Internal server error');
+    }
+
+    if (!incomingRefreshToken) {
+      throw new ApiError(401, 'Invalid refresh token');
+    }
+
+    try {
+      const decodedToken = verifyRefreshToken(incomingRefreshToken);
+      if (!decodedToken) {
+        throw new ApiError(401, 'Invalid refresh token');
+      }
+
+      const user = await User.findById(decodedToken.id);
+
+      if (!user) {
+        throw new ApiError(401, 'Invalid refresh token');
+      }
+
+      if (incomingRefreshToken !== user.refreshToken) {
+        throw new ApiError(401, 'Refresh token is expired or used');
+      }
+      console.log('incomingRefreshToken:', incomingRefreshToken);
+      console.log('user.refreshToken:', user.refreshToken);
+      const accessToken = user.generateAccessToken();
+      const refreshToken = user.generateRefreshToken();
+      user.refreshToken = refreshToken;
+      const result = await user.save({ validateBeforeSave: false });
+      console.log('User after saving refresh token:', result);
+      return res
+        .status(200)
+        .cookie('accessToken', accessToken, accessTokenCookieOptions)
+        .cookie('refreshToken', refreshToken, refreshTokenCookieOptions)
+        .json({
+          data: { accessToken, refreshToken },
+          message: 'Access token refreshed',
+        });
+    } catch (error) {
+      throw new ApiError(401, 'Invalid refresh token');
+    }
+  },
+);

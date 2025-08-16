@@ -9,6 +9,7 @@ import userRouter from './routes/user.route';
 import blogRouter from './routes/blog.route';
 
 import { authenticateRequest } from './middlewares/authentication.middleware';
+import { errorHandler } from './middlewares/errorHandler';
 
 const app = express();
 const PORT = process.env.PORT;
@@ -33,5 +34,7 @@ app.get('/', renderHomePage);
 
 app.use('/user', userRouter);
 app.use('/blogs', blogRouter);
+
+app.use(errorHandler);
 
 app.listen(PORT, () => console.log(`Server is running on http://localhost:${PORT}`));
