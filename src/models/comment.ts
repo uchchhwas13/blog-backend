@@ -4,6 +4,8 @@ export interface IComment extends Document {
   content: string;
   createdBy: Schema.Types.ObjectId;
   blogId: Schema.Types.ObjectId;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const commentSchema = new Schema<IComment>(

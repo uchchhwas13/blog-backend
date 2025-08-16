@@ -1,9 +1,13 @@
 import { Response, Request } from 'express';
 import { Comment } from '../models/comment';
+import { CommentResponse } from '../types/blog.type';
 
-export const handleAddComment = async (req: Request, res: Response) => {
+export const handleAddComment = async (
+  req: Request<{ blogId: string }, {}, { content: string }>,
+  res: Response<CommentResponse>,
+) => {
   if (!req.user) {
-    return res.status(401).json({ message: 'Unauthorized' });
+    return res.status(401).json({ success: false, message: 'Unauthorized' });
   }
   const comment = await Comment.create({
     content: req.body.content,
@@ -11,5 +15,20 @@ export const handleAddComment = async (req: Request, res: Response) => {
     blogId: req.params.blogId,
   });
   console.log('Comment created:', comment);
-  return res.redirect(`/blog/${req.params.blogId}`);
+  return res.status(201).json({
+    message: 'Comment added successfully',
+    success: true,
+    data: {
+      comment: {
+        id: comment._id.toString(),
+        content: comment.content,
+        createdBy: {
+          id: req.user.id,
+          name: req.user.name,
+        },
+        blogId: req.params.blogId,
+        createdAt: comment.createdAt,
+      },
+    },
+  });
 };
