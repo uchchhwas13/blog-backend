@@ -1,35 +1,15 @@
-import { Router, Request, Response } from 'express';
-import multer from 'multer';
-import path from 'path';
+import { Router } from 'express';
 import { handleGetBlogDetails, handleAddBlogPost } from '../controllers/blog.controller';
 import { handleAddComment } from '../controllers/comment.controller';
 import { validateBlog, validateBody } from '../middlewares/validateBlog.middleware';
 import { commentSchema } from '../validations/commentSchema';
+import { upload } from '../middlewares/multer.middleware';
 
-const router = Router();
+const blogRouter = Router();
 
-const storage = multer.diskStorage({
-  destination: (
-    req: Request,
-    file: Express.Multer.File,
-    cb: (error: Error | null, destination: string) => void,
-  ) => {
-    cb(null, path.resolve('./public/uploads/'));
-  },
-  filename: (
-    req: Request,
-    file: Express.Multer.File,
-    cb: (error: Error | null, filename: string) => void,
-  ) => {
-    const fileName = `${Date.now()}-${file.originalname}`;
-    cb(null, fileName);
-  },
-});
-
-const upload = multer({ storage });
 //router.get('/add-new', renderCreateBlogPage);
-router.post('/', upload.single('coverImage'), validateBlog, handleAddBlogPost);
-router.get('/:id', handleGetBlogDetails);
-router.post('/comment/:blogId', validateBody(commentSchema), handleAddComment);
+blogRouter.post('/', upload.single('coverImage'), validateBlog, handleAddBlogPost);
+blogRouter.get('/:id', handleGetBlogDetails);
+blogRouter.post('/comment/:blogId', validateBody(commentSchema), handleAddComment);
 
-export default router;
+export default blogRouter;
