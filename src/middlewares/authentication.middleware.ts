@@ -19,7 +19,6 @@ export function authenticateRequest(cookieName: string): RequestHandler {
       req.user = payload;
       next();
     } catch (error) {
-      console.error('Token verification failed:', error);
       throw new Error('Invalid Access Token');
     }
   };
