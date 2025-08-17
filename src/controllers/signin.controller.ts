@@ -1,20 +1,9 @@
 import { User } from '../models/user';
 import { Request, Response } from 'express';
 import { AuthPayload, SigninResponse } from '../types/auth.types';
-import jwt from 'jsonwebtoken';
 import { verifyRefreshToken } from '../services/authentication';
 import { ApiError } from '../utils/ApiError';
-
-const accessTokenCookieOptions = {
-  httpOnly: true,
-  secure: false, // true if HTTPS
-  maxAge: 60 * 1000, // 1 minute
-};
-const refreshTokenCookieOptions = {
-  httpOnly: true,
-  secure: false, // true if HTTPS
-  maxAge: 60 * 60 * 1000, // 1 hour
-};
+import { accessTokenCookieOptions, refreshTokenCookieOptions } from '../types/auth.types';
 
 export const handleSignin = async (
   req: Request<{}, {}, AuthPayload>,
