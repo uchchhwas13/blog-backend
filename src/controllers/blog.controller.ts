@@ -2,7 +2,7 @@ import { Response, Request } from 'express';
 import type { UserTokenPayload } from '../services/authentication';
 import { Blog } from '../models/blog';
 import { Comment } from '../models/comment';
-import { AddBlogPostPayload, BlogWithCommentsResponse } from '../types/blog.type';
+import { AddBlogPostPayload, BlogWithCommentsResponse, BlogPostResponse } from '../types/blog.type';
 
 declare global {
   namespace Express {
@@ -14,7 +14,7 @@ declare global {
 
 export const handleAddBlogPost = async (
   req: Request<{}, {}, AddBlogPostPayload>,
-  res: Response,
+  res: Response<BlogPostResponse>,
 ) => {
   if (!req.user) {
     return res.status(401).json({

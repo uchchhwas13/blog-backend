@@ -25,12 +25,14 @@ export const handleSignup = async (
     });
 
     return res.status(201).json({
+      success: true,
       message: 'User registered successfully',
       data: {
         user: {
           id: result._id.toString(),
           name: result.name,
           email: result.email,
+          role: result.role,
         },
       },
     });

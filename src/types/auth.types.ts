@@ -1,28 +1,27 @@
+import { APIResponse } from '../utils/APIResponse';
 export type AuthPayload = {
   email: string;
   password: string;
 };
 
-export type SigninSuccessResponse = {
-  success: true;
-  message: string;
-  data: {
-    user: UserData;
-    accessToken: string;
-    refreshToken: string;
-  };
+type UserData = {
+  id: string;
+  email: string;
+  name: string;
+  role: string;
 };
+
+type SigninSuccessData = {
+  user: UserData;
+  accessToken: string;
+  refreshToken: string;
+};
+
+export type SigninSuccessResponse = APIResponse<SigninSuccessData>;
 
 export type ErrorResponse = {
   success: false;
   message: string;
-};
-
-type UserData = {
-  _id: string;
-  email: string;
-  name: string;
-  role: string;
 };
 
 export type SignupPayload = {
@@ -31,16 +30,11 @@ export type SignupPayload = {
   password: string;
 };
 
-export type SignupSuccessResponse = {
-  message: string;
-  data: {
-    user: {
-      id: string;
-      name: string;
-      email: string;
-    };
-  };
+type SignupSuccessData = {
+  user: UserData;
 };
+
+export type SignupSuccessResponse = APIResponse<SignupSuccessData>;
 
 export type SigninResponse = SigninSuccessResponse | ErrorResponse;
 export type SignupResponse = SignupSuccessResponse | ErrorResponse;

@@ -4,6 +4,7 @@ import { AuthPayload, SigninResponse } from '../types/auth.types';
 import { verifyRefreshToken } from '../services/authentication';
 import { ApiError } from '../utils/ApiError';
 import { accessTokenCookieOptions, refreshTokenCookieOptions } from '../types/auth.types';
+import { RequestHandler } from 'express';
 
 export const handleSignin = async (
   req: Request<{}, {}, AuthPayload>,
@@ -26,7 +27,7 @@ export const handleSignin = async (
     user.refreshToken = refreshToken;
     user.save({ validateBeforeSave: false });
     const userData = {
-      _id: user._id.toString(),
+      id: user._id.toString(),
       email: user.email,
       name: user.name,
       role: user.role,
@@ -75,8 +76,6 @@ export const logoutUser = async (req: Request, res: Response) => {
     .clearCookie('refreshToken', refreshTokenCookieOptions)
     .json({ success: true, message: 'User logged Out' });
 };
-
-import { RequestHandler } from 'express';
 
 export const asyncHandler = (requestHandler: RequestHandler): RequestHandler => {
   return (req, res, next) => {
