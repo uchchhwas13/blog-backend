@@ -18,15 +18,3 @@ userRouter.post('/logout', logoutUser);
 userRouter.post('/refresh-access-token', handleRefreshAccessToken);
 
 export default userRouter;
-// router.post('/signin', async (req, res) => {
-//   console.log('from post sign in', req.body);
-//   const { email, password } = req.body;
-//   try {
-//     const token = await User.matchPasswordAndGenerateToken(email, password);
-//     return res.cookie('token', token).redirect('/');
-//   } catch (error) {
-//     return res.render('signin', {
-//       error: 'Incorrect email or password',
-//     });
-//   }
-// });
