@@ -8,11 +8,12 @@ import {
 import { validateBody } from '../middlewares/validateBlog.middleware';
 import { signupSchema } from '../validations/signupSchema';
 import { signinSchema } from '../validations/signinSchema';
+import { upload } from '../middlewares/multer.middleware';
 
 const userRouter = Router();
 
 userRouter.post('/signin', validateBody(signinSchema), handleSignin);
-userRouter.post('/signup', validateBody(signupSchema), handleSignup);
+userRouter.post('/signup', upload.single('profileImage'), validateBody(signupSchema), handleSignup);
 
 userRouter.post('/logout', logoutUser);
 userRouter.post('/refresh-access-token', handleRefreshAccessToken);

@@ -9,7 +9,7 @@ export interface IUser extends Document {
   email: string;
   salt: string;
   password: string;
-  profileImageUrl?: string;
+  profileImageUrl: string;
   refreshToken: string;
   matchPassword(user: IUser, password: string): void;
   generateAccessToken(): string;
@@ -36,7 +36,6 @@ const userSchema = new Schema<IUser>(
     },
     profileImageUrl: {
       type: String,
-      default: '/images/default.jpg',
     },
     refreshToken: {
       type: String,

@@ -12,6 +12,7 @@ export const handleSignup = async (
     if (!fullname || !email || !password) {
       return res.status(400).json({ success: false, message: 'All fields are required' });
     }
+    const profileImageUrl = req.file ? `/uploads/${req.file.filename}` : '/images/default.png';
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -22,6 +23,7 @@ export const handleSignup = async (
       name: fullname,
       email,
       password,
+      profileImageUrl,
     });
 
     return res.status(201).json({
