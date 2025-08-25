@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { z, ZodType, ZodError } from 'zod';
-import { blogTextSchema, blogFileSchema } from '../validations/blogSchema';
+import { blogTextSchema, imageFileSchema } from '../validations/blogSchema';
 
 export function validateBody<T extends ZodType>(schema: T) {
   return (req: Request, res: Response, next: NextFunction) => {
@@ -36,7 +36,7 @@ export const validateBlog = (req: Request, res: Response, next: NextFunction) =>
     if (!req.file) {
       return res.status(400).json({ error: 'Cover image is required' });
     }
-    blogFileSchema.parse(req.file);
+    imageFileSchema.parse(req.file);
     next();
   } catch (err) {
     if (err instanceof z.ZodError) {
