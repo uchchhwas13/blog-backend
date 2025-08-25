@@ -10,7 +10,6 @@ export interface IUser extends Document {
   salt: string;
   password: string;
   profileImageUrl?: string;
-  role: 'USER' | 'ADMIN';
   refreshToken: string;
   matchPassword(user: IUser, password: string): void;
   generateAccessToken(): string;
@@ -38,11 +37,6 @@ const userSchema = new Schema<IUser>(
     profileImageUrl: {
       type: String,
       default: '/images/default.jpg',
-    },
-    role: {
-      type: String,
-      enum: ['USER', 'ADMIN'],
-      default: 'USER',
     },
     refreshToken: {
       type: String,
@@ -84,7 +78,6 @@ userSchema.methods.generateAccessToken = function (this: IUser): string {
       id: this._id,
       email: this.email,
       name: this.name,
-      role: this.role,
     },
     secret,
     { expiresIn: expiryDuration },

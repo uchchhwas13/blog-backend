@@ -32,7 +32,6 @@ export const handleSignup = async (
           id: result._id.toString(),
           name: result.name,
           email: result.email,
-          role: result.role,
         },
       },
     });

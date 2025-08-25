@@ -5,7 +5,6 @@ const userTokenPayloadSchema = z.object({
   id: z.string(),
   name: z.string(),
   email: z.string(),
-  role: z.string(),
 });
 
 const refreshTokenPayloadSchema = z.object({
