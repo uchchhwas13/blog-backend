@@ -30,7 +30,6 @@ export const handleSignin = async (
       id: user._id.toString(),
       email: user.email,
       name: user.name,
-      role: user.role,
     };
     return res
       .status(200)
@@ -58,17 +57,11 @@ export const logoutUser = async (req: Request, res: Response) => {
     return res.status(401).json({ message: 'Unauthorized' });
   }
 
-  await User.findByIdAndUpdate(
-    req.user.id,
-    {
-      $unset: {
-        refreshToken: 1, // this removes the field from document
-      },
+  await User.findByIdAndUpdate(req.user.id, {
+    $unset: {
+      refreshToken: 1, // this removes the field from document
     },
-    {
-      new: true,
-    },
-  );
+  });
   req.user = null;
   return res
     .status(200)
