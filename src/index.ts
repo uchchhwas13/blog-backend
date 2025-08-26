@@ -3,6 +3,7 @@ import express from 'express';
 import path from 'path';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 
 import userRouter from './routes/user.route';
 import blogRouter from './routes/blog.route';
@@ -21,6 +22,8 @@ if (!process.env.MONGO_URL) {
 mongoose.connect(process.env.MONGO_URL).then(() => console.log('Connected to MongoDB'));
 
 app.use(express.urlencoded({ extended: false }));
+app.use(cors());
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(authenticateRequest('accessToken'));
