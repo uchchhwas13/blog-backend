@@ -10,6 +10,7 @@ import {
   BlogPostResponse,
   BlogListAPIResponse,
 } from '../types/blog.type';
+import { buildFileUrl } from '../utils/fileUrlGenerator';
 
 declare global {
   namespace Express {
@@ -29,7 +30,7 @@ export const handleGetBlogList = async (req: Request, res: Response<BlogListAPIR
         blogs: blogs.map((blog) => ({
           id: blog._id.toString(),
           title: blog.title,
-          coverImageUrl: blog.coverImageUrl,
+          coverImageUrl: buildFileUrl(req, blog.coverImageUrl),
           createdAt: blog.createdAt,
         })),
       },
@@ -73,7 +74,7 @@ export const handleAddBlogPost = async (
         id: blog._id.toString(),
         title: blog.title,
         body: blog.body,
-        coverImageUrl: blog.coverImageUrl,
+        coverImageUrl: buildFileUrl(req, blog.coverImageUrl),
         createdBy: {
           name: req.user.name,
           id: req.user.id,
@@ -102,7 +103,7 @@ export const handleGetBlogDetails = async (
       id: blog._id.toString(),
       title: blog.title,
       body: blog.body,
-      coverImageUrl: blog.coverImageUrl,
+      coverImageUrl: buildFileUrl(req, blog.coverImageUrl),
       createdBy: {
         name: blog.createdBy instanceof User ? blog.createdBy.name : 'Unknown',
         imageUrl: blog.createdBy instanceof User ? blog.createdBy.profileImageUrl : '',
@@ -114,7 +115,10 @@ export const handleGetBlogDetails = async (
       content: comment.content,
       createdBy: {
         name: comment.createdBy instanceof User ? comment.createdBy.name : 'Unknown',
-        imageUrl: comment.createdBy instanceof User ? comment.createdBy.profileImageUrl : '',
+        imageUrl:
+          comment.createdBy instanceof User
+            ? buildFileUrl(req, comment.createdBy.profileImageUrl)
+            : buildFileUrl(req, '/images/default.png'),
       },
       createdAt: comment.createdAt,
     }));
