@@ -106,7 +106,10 @@ export const handleGetBlogDetails = async (
       coverImageUrl: buildFileUrl(req, blog.coverImageUrl),
       createdBy: {
         name: blog.createdBy instanceof User ? blog.createdBy.name : 'Unknown',
-        imageUrl: blog.createdBy instanceof User ? blog.createdBy.profileImageUrl : '',
+        imageUrl:
+          blog.createdBy instanceof User
+            ? buildFileUrl(req, blog.createdBy.profileImageUrl)
+            : buildFileUrl(req, '/images/default.png'),
       },
       createdAt: blog.createdAt,
     };
