@@ -2,7 +2,14 @@ import { Response, Request } from 'express';
 import type { UserTokenPayload } from '../services/authentication';
 import { Blog } from '../models/blog';
 import { Comment } from '../models/comment';
-import { AddBlogPostPayload, BlogWithCommentsResponse, BlogPostResponse } from '../types/blog.type';
+import { User } from '../models/user';
+
+import {
+  AddBlogPostPayload,
+  BlogWithCommentsResponse,
+  BlogPostResponse,
+  BlogListAPIResponse,
+} from '../types/blog.type';
 
 declare global {
   namespace Express {
@@ -47,8 +54,8 @@ export const handleAddBlogPost = async (
         body: blog.body,
         coverImageUrl: blog.coverImageUrl,
         createdBy: {
-          id: req.user.id,
           name: req.user.name,
+          id: req.user.id,
         },
         createdAt: blog.createdAt,
       },
@@ -70,12 +77,33 @@ export const handleGetBlogDetails = async (
       .populate('createdBy')
       .sort({ createdAt: -1 });
 
+    const sanitizedBlog = {
+      id: blog._id.toString(),
+      title: blog.title,
+      body: blog.body,
+      coverImageUrl: blog.coverImageUrl,
+      createdBy: {
+        name: blog.createdBy instanceof User ? blog.createdBy.name : 'Unknown',
+        imageUrl: blog.createdBy instanceof User ? blog.createdBy.profileImageUrl : '',
+      },
+      createdAt: blog.createdAt,
+    };
+    const sanitizedComments = comments.map((comment) => ({
+      id: comment._id.toString(),
+      content: comment.content,
+      createdBy: {
+        name: comment.createdBy instanceof User ? comment.createdBy.name : 'Unknown',
+        imageUrl: comment.createdBy instanceof User ? comment.createdBy.profileImageUrl : '',
+      },
+      createdAt: comment.createdAt,
+    }));
+
     return res.json({
       message: 'Blog details fetched successfully',
       success: true,
       data: {
-        blog,
-        comments,
+        blog: sanitizedBlog,
+        comments: sanitizedComments,
       },
     });
   } catch (error) {

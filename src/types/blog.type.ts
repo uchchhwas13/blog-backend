@@ -1,6 +1,4 @@
 import { ErrorResponse } from './auth.types';
-import { IBlog } from '../models/blog';
-import { IComment } from '../models/comment';
 import { APIResponse } from '../utils/APIResponse';
 
 type CommentData = {
@@ -20,9 +18,31 @@ export type CommentSuccessResponse = APIResponse<CommentData>;
 
 export type CommentResponse = CommentSuccessResponse | ErrorResponse;
 
+type BlogDetail = {
+  id: string;
+  title: string;
+  body: string;
+  coverImageUrl: string;
+  createdBy: {
+    name: string;
+    imageUrl: string;
+  };
+  createdAt: Date;
+};
+
+type Comment = {
+  id: string;
+  content: string;
+  createdBy: {
+    name: string;
+    imageUrl: string;
+  };
+  createdAt: Date;
+};
+
 type BlogWithCommentsData = {
-  blog: IBlog;
-  comments: IComment[];
+  blog: BlogDetail;
+  comments: Comment[];
 };
 
 type BlogWithCommentsSuccessResponse = APIResponse<BlogWithCommentsData>;
@@ -34,7 +54,7 @@ export type AddBlogPostPayload = {
   body: string;
 };
 
-type BlogData = {
+type BlogCreationResponse = {
   blog: {
     id: string;
     title: string;
@@ -48,6 +68,18 @@ type BlogData = {
   };
 };
 
-type BlogPostSuccessResponse = APIResponse<BlogData>;
-
+type BlogPostSuccessResponse = APIResponse<BlogCreationResponse>;
 export type BlogPostResponse = BlogPostSuccessResponse | ErrorResponse;
+
+type BlogItem = {
+  id: string;
+  title: string;
+  coverImageUrl: string;
+  createdAt: Date;
+};
+
+type BlogListData = {
+  blogs: BlogItem[];
+};
+type BlogListSuccessResponse = APIResponse<BlogListData>;
+export type BlogListAPIResponse = BlogListSuccessResponse | ErrorResponse;
