@@ -19,6 +19,27 @@ declare global {
   }
 }
 
+export const handleGetBlogList = async (req: Request, res: Response<BlogListAPIResponse>) => {
+  try {
+    const blogs = await Blog.find({}).populate('createdBy').sort({ createdAt: -1 });
+    return res.status(200).json({
+      success: true,
+      message: 'Blog list fetched successfully',
+      data: {
+        blogs: blogs.map((blog) => ({
+          id: blog._id.toString(),
+          title: blog.title,
+          coverImageUrl: blog.coverImageUrl,
+          createdAt: blog.createdAt,
+        })),
+      },
+    });
+  } catch (error) {
+    console.error('Error fetching blog list:', error);
+    return res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
 export const handleAddBlogPost = async (
   req: Request<{}, {}, AddBlogPostPayload>,
   res: Response<BlogPostResponse>,
