@@ -5,10 +5,6 @@ type CommentData = {
   comment: {
     id: string;
     content: string;
-    createdBy: {
-      id: string;
-      name: string;
-    };
     blogId: string;
     createdAt: Date;
   };

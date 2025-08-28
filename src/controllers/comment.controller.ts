@@ -22,10 +22,6 @@ export const handleAddComment = async (
       comment: {
         id: comment._id.toString(),
         content: comment.content,
-        createdBy: {
-          id: req.user.id,
-          name: req.user.name,
-        },
         blogId: req.params.blogId,
         createdAt: comment.createdAt,
       },
