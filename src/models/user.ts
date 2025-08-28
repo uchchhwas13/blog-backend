@@ -64,9 +64,9 @@ userSchema.methods.matchPassword = function (user: IUser, password: string) {
   if (userProvidedHash !== user.password) throw new Error('Incorrect password');
 };
 
-userSchema.methods.generateAccessToken = function (this: IUser): string {
+userSchema.methods.generateAccessToken = function (): string {
   const secret = process.env.ACCESS_TOKEN_SECRET;
-  const expiryDuration = 2 * 60;
+  const expiryDuration = 60;
 
   if (!secret) {
     throw new Error('ACCESS_TOKEN_SECRET is not defined');
