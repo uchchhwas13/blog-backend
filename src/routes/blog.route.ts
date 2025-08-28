@@ -13,7 +13,7 @@ const blogRouter = Router();
 
 blogRouter.post('/', upload.single('coverImage'), validateBlog, handleAddBlogPost);
 blogRouter.get('/:id', handleGetBlogDetails);
-blogRouter.post('/comment/:blogId', validateBody(commentSchema), handleAddComment);
+blogRouter.post('/:blogId/comments', validateBody(commentSchema), handleAddComment);
 blogRouter.get('/', handleGetBlogList);
 
 export default blogRouter;
