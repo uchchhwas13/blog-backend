@@ -7,6 +7,10 @@ type CommentData = {
     content: string;
     blogId: string;
     createdAt: Date;
+    createdBy: {
+      name: string;
+      imageUrl: string;
+    };
   };
 };
 
