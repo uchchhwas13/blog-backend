@@ -22,7 +22,12 @@ if (!process.env.MONGO_URL) {
 mongoose.connect(process.env.MONGO_URL).then(() => console.log('Connected to MongoDB'));
 
 app.use(express.urlencoded({ extended: false }));
-app.use(cors());
+app.use(
+  cors({
+    origin: 'http://localhost:5173',
+    credentials: true, // allow cookies to be sent
+  }),
+);
 
 app.use(express.json());
 app.use(cookieParser());
