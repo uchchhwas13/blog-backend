@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import jwt from 'jsonwebtoken';
+import jwt, { JsonWebTokenError } from 'jsonwebtoken';
 
 const userTokenPayloadSchema = z.object({
   id: z.string(),
@@ -14,18 +14,17 @@ const refreshTokenPayloadSchema = z.object({
 export type UserTokenPayload = z.infer<typeof userTokenPayloadSchema>;
 export type RefreshTokenPayload = z.infer<typeof refreshTokenPayloadSchema>;
 
-export function verifyAccessToken(token: string): UserTokenPayload | null {
+export function verifyAccessToken(token: string): UserTokenPayload {
   const secret = process.env.ACCESS_TOKEN_SECRET!;
-  try {
-    const decoded = jwt.verify(token, secret);
-    const parsed = userTokenPayloadSchema.safeParse(decoded);
-    if (parsed.success) {
-      return parsed.data;
-    }
-    return null;
-  } catch {
-    return null;
+
+  const decoded = jwt.verify(token, secret);
+
+  const parsed = userTokenPayloadSchema.safeParse(decoded);
+  if (!parsed.success) {
+    throw new JsonWebTokenError('Invalid payload');
   }
+
+  return parsed.data;
 }
 
 export function verifyRefreshToken(token: string): RefreshTokenPayload | null {
