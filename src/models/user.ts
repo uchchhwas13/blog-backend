@@ -57,10 +57,7 @@ userSchema.pre('save', function (next) {
 });
 
 userSchema.methods.matchPassword = function (user: IUser, password: string) {
-  console.log('Matching password for email:', user.email);
-
   const userProvidedHash = createHmac('sha256', user.salt).update(password).digest('hex');
-  console.log('Password matched for user:', userProvidedHash, user.password);
   if (userProvidedHash !== user.password) throw new Error('Incorrect password');
 };
 

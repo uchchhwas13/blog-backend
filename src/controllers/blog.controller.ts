@@ -65,7 +65,6 @@ export const handleAddBlogPost = async (
     coverImageUrl: `/uploads/${req.file.filename}`,
     createdBy: req.user.id,
   });
-  console.log('Blog created successfully', blog);
   return res.status(201).json({
     success: true,
     message: 'Blog post created successfully',
