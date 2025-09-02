@@ -52,12 +52,8 @@ export const handleSignin = async (
   }
 };
 
-export const logoutUser = async (req: Request, res: Response) => {
-  if (!req.user) {
-    return res.status(401).json({ message: 'Unauthorized' });
-  }
-
-  await User.findByIdAndUpdate(req.user.id, {
+export const logoutUser = async (req: Request<{}, {}, { userId: string }>, res: Response) => {
+  await User.findByIdAndUpdate(req.body.userId, {
     $unset: {
       refreshToken: 1, // this removes the field from document
     },
@@ -104,8 +100,6 @@ export const handleRefreshAccessToken = asyncHandler(
       if (incomingRefreshToken !== user.refreshToken) {
         throw new ApiError(401, 'Refresh token is expired or used');
       }
-      console.log('incomingRefreshToken:', incomingRefreshToken);
-      console.log('user.refreshToken:', user.refreshToken);
       const accessToken = user.generateAccessToken();
       const refreshToken = user.generateRefreshToken();
       user.refreshToken = refreshToken;
