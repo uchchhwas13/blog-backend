@@ -104,7 +104,6 @@ export const handleRefreshAccessToken = asyncHandler(
       const refreshToken = user.generateRefreshToken();
       user.refreshToken = refreshToken;
       const result = await user.save({ validateBeforeSave: false });
-      console.log('User after saving refresh token:', result);
       return res
         .status(200)
         .cookie('accessToken', accessToken, accessTokenCookieOptions)
