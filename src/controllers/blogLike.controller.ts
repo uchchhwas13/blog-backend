@@ -2,6 +2,7 @@ import { Response, Request } from 'express';
 import { BlogLike } from '../models/blogLike';
 import { BlogLikeResponse } from '../types/blog.type';
 import { asyncHandler } from '../middlewares/asyncHandler';
+import { Blog } from '../models/blog';
 
 export const handleBlogLikeStatus = asyncHandler(
   async (
@@ -25,12 +26,13 @@ export const handleBlogLikeStatus = asyncHandler(
       result = await BlogLike.create({ blogId, userId, isLiked });
     }
 
+    const likeCount = await BlogLike.countDocuments({ blogId, isLiked: true });
+    await Blog.findByIdAndUpdate(blogId, { likeCount });
+
     return res.status(200).json({
       success: true,
       message: isLiked ? 'Blog liked successfully' : 'Blog unliked successfully',
-      data: {
-        isLiked: result.isLiked,
-      },
+      data: { isLiked },
     });
   },
 );
