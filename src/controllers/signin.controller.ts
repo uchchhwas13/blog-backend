@@ -1,5 +1,5 @@
 import { User } from '../models/user';
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { AuthPayload, SigninResponse } from '../types/auth.types';
 import { verifyRefreshToken } from '../services/authentication';
 import { ApiError } from '../utils/ApiError';
@@ -66,9 +66,16 @@ export const logoutUser = async (req: Request<{}, {}, { userId: string }>, res: 
     .json({ success: true, message: 'User logged Out' });
 };
 
-export const asyncHandler = (requestHandler: RequestHandler): RequestHandler => {
+export const asyncHandler = <Params, ResBody, ReqBody, ReqQuery, ReturnType>(
+  requestHandler: (
+    req: Request<Params, ResBody, ReqBody, ReqQuery>,
+    res: Response<ResBody>,
+    next: NextFunction,
+  ) => Promise<ReturnType>,
+): RequestHandler<Params, ResBody, ReqBody, ReqQuery> => {
   return (req, res, next) => {
-    Promise.resolve(requestHandler(req, res, next)).catch(next);
+    const val = Promise.resolve(requestHandler(req, res, next)).catch(next);
+    return Promise.resolve(requestHandler(req, res, next)).catch(next);
   };
 };
 
