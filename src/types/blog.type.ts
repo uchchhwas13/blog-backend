@@ -83,3 +83,10 @@ type BlogListData = {
 };
 type BlogListSuccessResponse = APIResponse<BlogListData>;
 export type BlogListAPIResponse = BlogListSuccessResponse | ErrorResponse;
+
+type BlogLikeStatus = {
+  isLiked: boolean;
+};
+
+type BlogLikeSuccessResponse = APIResponse<BlogLikeStatus>;
+export type BlogLikeResponse = BlogLikeSuccessResponse | ErrorResponse;
