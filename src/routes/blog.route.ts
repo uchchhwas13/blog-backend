@@ -8,6 +8,8 @@ import { handleAddComment } from '../controllers/comment.controller';
 import { validateBlog, validateBody } from '../middlewares/validateBlog.middleware';
 import { commentSchema } from '../validations/commentSchema';
 import { upload } from '../middlewares/multer.middleware';
+import { handleBlogLikeStatus } from '../controllers/blogLike.controller';
+import { blogLikeSchema } from '../validations/blogLikeSchema';
 
 const blogRouter = Router();
 
@@ -15,5 +17,7 @@ blogRouter.post('/', upload.single('coverImage'), validateBlog, handleAddBlogPos
 blogRouter.get('/:id', handleGetBlogDetails);
 blogRouter.post('/:blogId/comments', validateBody(commentSchema), handleAddComment);
 blogRouter.get('/', handleGetBlogList);
+
+blogRouter.post('/:blogId/like', validateBody(blogLikeSchema), handleBlogLikeStatus);
 
 export default blogRouter;
