@@ -7,7 +7,6 @@ export interface IBlog extends Document {
   coverImageUrl: string;
   createdBy: Schema.Types.ObjectId;
   likeCount: number;
-  isLikedByUser: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -29,10 +28,6 @@ const blogSchema = new Schema<IBlog>(
     likeCount: {
       type: Number,
       default: 0,
-    },
-    isLikedByUser: {
-      type: Boolean,
-      default: false,
     },
     createdBy: {
       type: Schema.Types.ObjectId,
