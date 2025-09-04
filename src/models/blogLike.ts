@@ -3,19 +3,20 @@ import { Schema, model, Document } from 'mongoose';
 export interface IBlogLike extends Document {
   blogId: Schema.Types.ObjectId;
   userId: Schema.Types.ObjectId;
+  isLiked: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
 
-const BlogLikeSchema = new Schema<IBlogLike>(
+const blogLikeSchema = new Schema<IBlogLike>(
   {
-    blogId: { type: Schema.Types.ObjectId, ref: 'Blog', required: true, index: true },
-    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
+    blogId: { type: Schema.Types.ObjectId, ref: 'Blog', required: true },
+    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    isLiked: { type: Boolean, default: false },
   },
   { timestamps: true },
 );
 
-// prevent duplicate likes
-BlogLikeSchema.index({ blogId: 1, userId: 1 }, { unique: true });
+blogLikeSchema.index({ blogId: 1, userId: 1 }, { unique: true });
 
-export const BlogLike = model<IBlogLike>('BlogLike', BlogLikeSchema);
+export const BlogLike = model<IBlogLike>('BlogLike', blogLikeSchema);
