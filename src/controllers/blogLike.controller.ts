@@ -3,7 +3,8 @@ import { BlogLike } from '../models/blogLike';
 import { BlogLikeResponse } from '../types/blog.type';
 import { asyncHandler } from '../middlewares/asyncHandler';
 import { Blog } from '../models/blog';
-import { de } from 'zod/v4/locales/index.cjs';
+import { User } from '../models/user';
+import { buildFileUrl } from '../utils/fileUrlGenerator';
 
 export const handleBlogLikeStatus = asyncHandler(
   async (
@@ -34,6 +35,29 @@ export const handleBlogLikeStatus = asyncHandler(
       success: true,
       message: isLiked ? 'Blog liked successfully' : 'Blog unliked successfully',
       data: { isLiked },
+    });
+  },
+);
+
+export const handleGetBlogLikes = asyncHandler(
+  async (req: Request<{ blogId: string }>, res: Response) => {
+    const { blogId } = req.params;
+
+    const likes = await BlogLike.find({ blogId, isLiked: true }).populate('userId');
+    console.log(likes);
+    const likeList = likes.map((like) => ({
+      userId: like.userId instanceof User ? like.userId._id.toString() : 'Unknown',
+      name: like.userId instanceof User ? like.userId.name : 'Unknown',
+      imageUrl:
+        like.userId instanceof User
+          ? buildFileUrl(req, like.userId.profileImageUrl)
+          : buildFileUrl(req, '/images/default.png'),
+    }));
+
+    return res.status(200).json({
+      success: true,
+      totalLikes: likeList.length,
+      data: likeList,
     });
   },
 );
