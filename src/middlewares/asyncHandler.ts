@@ -9,7 +9,6 @@ export const asyncHandler = <Params, ResBody, ReqBody, ReqQuery, ReturnType>(
   ) => Promise<ReturnType>,
 ): RequestHandler<Params, ResBody, ReqBody, ReqQuery> => {
   return (req, res, next) => {
-    const val = Promise.resolve(requestHandler(req, res, next)).catch(next);
     return Promise.resolve(requestHandler(req, res, next)).catch(next);
   };
 };
