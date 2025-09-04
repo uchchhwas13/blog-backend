@@ -11,6 +11,7 @@ import {
   BlogListAPIResponse,
 } from '../types/blog.type';
 import { buildFileUrl } from '../utils/fileUrlGenerator';
+import { BlogLike } from '../models/blogLike';
 
 declare global {
   namespace Express {
@@ -98,11 +99,19 @@ export const handleGetBlogDetails = async (
       .populate('createdBy')
       .sort({ createdAt: -1 });
 
+    let isLikedByUser = false;
+    if (req.user) {
+      const userLike = await BlogLike.findOne({ blogId: req.params.id, userId: req.user.id });
+      isLikedByUser = userLike?.isLiked ?? false;
+    }
+
     const sanitizedBlog = {
       id: blog._id.toString(),
       title: blog.title,
       body: blog.body,
       coverImageUrl: buildFileUrl(req, blog.coverImageUrl),
+      isLikedByUser,
+      likeCount: blog.likeCount || 0,
       createdBy: {
         name: blog.createdBy instanceof User ? blog.createdBy.name : 'Unknown',
         imageUrl:

@@ -6,6 +6,8 @@ export interface IBlog extends Document {
   body: string;
   coverImageUrl: string;
   createdBy: Schema.Types.ObjectId;
+  likeCount: number;
+  isLikedByUser: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -24,6 +26,14 @@ const blogSchema = new Schema<IBlog>(
       type: String,
       required: true,
     },
+    likeCount: {
+      type: Number,
+      default: 0,
+    },
+    isLikedByUser: {
+      type: Boolean,
+      default: false,
+    },
     createdBy: {
       type: Schema.Types.ObjectId,
       ref: 'User',
@@ -33,4 +43,4 @@ const blogSchema = new Schema<IBlog>(
   { timestamps: true },
 );
 
-export const Blog: Model<IBlog> = mongoose.model<IBlog>('Blog', blogSchema);
+export const Blog = mongoose.model<IBlog>('Blog', blogSchema);
