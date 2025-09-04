@@ -84,36 +84,30 @@ export const handleRefreshAccessToken = asyncHandler(
     if (!incomingRefreshToken) {
       throw new ApiError(401, 'Invalid refresh token');
     }
-
-    try {
-      const decodedToken = verifyRefreshToken(incomingRefreshToken);
-      if (!decodedToken) {
-        throw new ApiError(401, 'Invalid refresh token');
-      }
-
-      const user = await User.findById(decodedToken.id);
-
-      if (!user) {
-        throw new ApiError(401, 'Invalid refresh token');
-      }
-
-      if (incomingRefreshToken !== user.refreshToken) {
-        throw new ApiError(401, 'Refresh token is expired or used');
-      }
-      const accessToken = user.generateAccessToken();
-      const refreshToken = user.generateRefreshToken();
-      user.refreshToken = refreshToken;
-      const result = await user.save({ validateBeforeSave: false });
-      return res
-        .status(200)
-        .cookie('accessToken', accessToken, accessTokenCookieOptions)
-        .cookie('refreshToken', refreshToken, refreshTokenCookieOptions)
-        .json({
-          data: { accessToken, refreshToken },
-          message: 'Access token refreshed',
-        });
-    } catch (error) {
+    const decodedToken = verifyRefreshToken(incomingRefreshToken);
+    if (!decodedToken) {
       throw new ApiError(401, 'Invalid refresh token');
     }
+
+    const user = await User.findById(decodedToken.id);
+    if (!user) {
+      throw new ApiError(401, 'Invalid refresh token');
+    }
+
+    if (incomingRefreshToken !== user.refreshToken) {
+      throw new ApiError(401, 'Invalid refresh token');
+    }
+    const accessToken = user.generateAccessToken();
+    const refreshToken = user.generateRefreshToken();
+    user.refreshToken = refreshToken;
+    const result = await user.save({ validateBeforeSave: false });
+    return res
+      .status(200)
+      .cookie('accessToken', accessToken, accessTokenCookieOptions)
+      .cookie('refreshToken', refreshToken, refreshTokenCookieOptions)
+      .json({
+        data: { accessToken, refreshToken },
+        message: 'Access token refreshed',
+      });
   },
 );
