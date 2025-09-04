@@ -1,7 +1,7 @@
 import { Response, Request } from 'express';
-import { asyncHandler } from './signin.controller';
 import { BlogLike } from '../models/blogLike';
 import { BlogLikeResponse } from '../types/blog.type';
+import { asyncHandler } from '../middlewares/asyncHandler';
 
 export const handleBlogLikeStatus = asyncHandler(
   async (

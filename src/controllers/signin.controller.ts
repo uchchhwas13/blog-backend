@@ -1,10 +1,10 @@
 import { User } from '../models/user';
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { AuthPayload, SigninResponse } from '../types/auth.types';
 import { verifyRefreshToken } from '../services/authentication';
 import { ApiError } from '../utils/ApiError';
 import { accessTokenCookieOptions, refreshTokenCookieOptions } from '../types/auth.types';
-import { RequestHandler } from 'express';
+import { asyncHandler } from '../middlewares/asyncHandler';
 
 export const handleSignin = async (
   req: Request<{}, {}, AuthPayload>,
@@ -64,19 +64,6 @@ export const logoutUser = async (req: Request<{}, {}, { userId: string }>, res: 
     .clearCookie('accessToken', accessTokenCookieOptions)
     .clearCookie('refreshToken', refreshTokenCookieOptions)
     .json({ success: true, message: 'User logged Out' });
-};
-
-export const asyncHandler = <Params, ResBody, ReqBody, ReqQuery, ReturnType>(
-  requestHandler: (
-    req: Request<Params, ResBody, ReqBody, ReqQuery>,
-    res: Response<ResBody>,
-    next: NextFunction,
-  ) => Promise<ReturnType>,
-): RequestHandler<Params, ResBody, ReqBody, ReqQuery> => {
-  return (req, res, next) => {
-    const val = Promise.resolve(requestHandler(req, res, next)).catch(next);
-    return Promise.resolve(requestHandler(req, res, next)).catch(next);
-  };
 };
 
 export const handleRefreshAccessToken = asyncHandler(
