@@ -99,18 +99,17 @@ export const handleGetBlogDetails = async (
       .populate('createdBy')
       .sort({ createdAt: -1 });
 
-    let isLikedByUser = false;
+    let isLikedByOwner = false;
     if (req.user) {
-      const userLike = await BlogLike.findOne({ blogId: req.params.id, userId: req.user.id });
-      isLikedByUser = userLike?.isLiked ?? false;
+      const result = await BlogLike.findOne({ blogId: req.params.id, userId: req.user.id });
+      isLikedByOwner = result?.isLiked ?? false;
     }
-
     const sanitizedBlog = {
       id: blog._id.toString(),
       title: blog.title,
       body: blog.body,
       coverImageUrl: buildFileUrl(req, blog.coverImageUrl),
-      isLikedByUser,
+      isLikedByOwner,
       likeCount: blog.likeCount || 0,
       createdBy: {
         name: blog.createdBy instanceof User ? blog.createdBy.name : 'Unknown',
