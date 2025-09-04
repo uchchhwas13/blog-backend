@@ -23,7 +23,7 @@ type BlogDetail = {
   title: string;
   body: string;
   coverImageUrl: string;
-  isLikedByUser: boolean;
+  isLikedByOwner: boolean;
   likeCount: number;
   createdBy: {
     name: string;
