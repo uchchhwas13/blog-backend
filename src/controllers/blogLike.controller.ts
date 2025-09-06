@@ -1,6 +1,6 @@
 import { Response, Request } from 'express';
 import { BlogLike } from '../models/blogLike';
-import { BlogLikeResponse } from '../types/blog.type';
+import { BlogLikeResponse, BlogLikesResponse } from '../types/blog.type';
 import { asyncHandler } from '../middlewares/asyncHandler';
 import { Blog } from '../models/blog';
 import { User } from '../models/user';
@@ -40,7 +40,7 @@ export const handleBlogLikeStatus = asyncHandler(
 );
 
 export const handleGetBlogLikes = asyncHandler(
-  async (req: Request<{ blogId: string }>, res: Response) => {
+  async (req: Request<{ blogId: string }>, res: Response<BlogLikesResponse>) => {
     const { blogId } = req.params;
 
     const likes = await BlogLike.find({ blogId, isLiked: true }).populate('userId');
@@ -56,8 +56,11 @@ export const handleGetBlogLikes = asyncHandler(
 
     return res.status(200).json({
       success: true,
-      totalLikes: likeList.length,
-      data: likeList,
+      message: 'Blog likes retrieved successfully',
+      data: {
+        totalLikes: likeList.length,
+        users: likeList,
+      },
     });
   },
 );

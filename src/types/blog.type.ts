@@ -92,3 +92,15 @@ type BlogLikeStatus = {
 
 type BlogLikeSuccessResponse = APIResponse<BlogLikeStatus>;
 export type BlogLikeResponse = BlogLikeSuccessResponse | ErrorResponse;
+
+type LikedUserInfo = {
+  userId: string;
+  name: string;
+  imageUrl: string;
+};
+type BlogLikesData = {
+  totalLikes: number;
+  users: LikedUserInfo[];
+};
+type BlogLikesSuccessResponse = APIResponse<BlogLikesData>;
+export type BlogLikesResponse = BlogLikesSuccessResponse | ErrorResponse;
