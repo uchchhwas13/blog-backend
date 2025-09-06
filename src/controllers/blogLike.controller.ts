@@ -44,7 +44,6 @@ export const handleGetBlogLikes = asyncHandler(
     const { blogId } = req.params;
 
     const likes = await BlogLike.find({ blogId, isLiked: true }).populate('userId');
-    console.log(likes);
     const likeList = likes.map((like) => ({
       userId: like.userId instanceof User ? like.userId._id.toString() : 'Unknown',
       name: like.userId instanceof User ? like.userId.name : 'Unknown',
