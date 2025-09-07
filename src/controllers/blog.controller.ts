@@ -110,7 +110,7 @@ export const handleGetBlogDetails = async (
       body: blog.body,
       coverImageUrl: buildFileUrl(req, blog.coverImageUrl),
       isLikedByUser: isLikedByUser,
-      likeCount: blog.likeCount,
+      totalLikes: blog.likeCount,
       createdBy: {
         name: blog.createdBy instanceof User ? blog.createdBy.name : 'Unknown',
         imageUrl:

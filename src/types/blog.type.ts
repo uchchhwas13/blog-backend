@@ -24,7 +24,7 @@ type BlogDetail = {
   body: string;
   coverImageUrl: string;
   isLikedByUser: boolean;
-  likeCount: number;
+  totalLikes: number;
   createdBy: {
     name: string;
     imageUrl: string;
