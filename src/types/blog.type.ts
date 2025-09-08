@@ -1,7 +1,7 @@
 import { ErrorResponse } from './auth.types';
 import { APIResponse } from '../utils/APIResponse';
 
-type CommentData = {
+export type CommentData = {
   comment: {
     id: string;
     content: string;
@@ -14,9 +14,7 @@ type CommentData = {
   };
 };
 
-export type CommentSuccessResponse = APIResponse<CommentData>;
-
-export type CommentResponse = CommentSuccessResponse | ErrorResponse;
+export type CommentResponse = APIResponse<CommentData>;
 
 type BlogDetail = {
   id: string;
