@@ -44,14 +44,14 @@ export const handleGetBlogLikes = asyncHandler(
     const { blogId } = req.params;
 
     const likes = await BlogLike.find({ blogId, isLiked: true }).populate('userId');
-    const likeList = likes.map((like) => ({
-      userId: like.userId instanceof User ? like.userId._id.toString() : 'Unknown',
-      name: like.userId instanceof User ? like.userId.name : 'Unknown',
-      imageUrl:
-        like.userId instanceof User
-          ? buildFileUrl(req, like.userId.profileImageUrl)
-          : buildFileUrl(req, '/images/default.png'),
-    }));
+    const likeList = likes.map((like) => {
+      const user = like.userId instanceof User ? like.userId : null;
+      return {
+        userId: user ? user._id.toString() : 'Unknown',
+        name: user ? user.name : 'Unknown',
+        imageUrl: buildFileUrl(req, user?.profileImageUrl ?? '/images/default.png'),
+      };
+    });
 
     return res.status(200).json({
       success: true,
