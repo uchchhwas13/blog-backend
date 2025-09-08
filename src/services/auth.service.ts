@@ -1,10 +1,9 @@
-// services/auth.service.ts
 import { User } from '../models/user';
 import { ApiError } from '../utils/ApiError';
-import { SigninSuccessData, UserData } from '../types/auth.types';
+import { SigninSuccessData, TokenResponse, UserData } from '../types/auth.types';
 import { SignupPayload } from '../types/auth.types';
 
-export async function signinUser(email: string, password: string): Promise<SigninSuccessData> {
+export const signinUser = async (email: string, password: string): Promise<SigninSuccessData> => {
   const trimmedEmail = email.trim();
   const user = await User.findOne({ email: trimmedEmail });
 
@@ -29,7 +28,7 @@ export async function signinUser(email: string, password: string): Promise<Signi
     accessToken,
     refreshToken,
   };
-}
+};
 
 export const signupUser = async (
   payload: SignupPayload,
@@ -56,4 +55,23 @@ export const signupUser = async (
     name: result.name,
     email: result.email,
   };
+};
+
+export const refreshAccessToken = async (
+  tokenId: string,
+  incomingRefreshToken: string,
+): Promise<TokenResponse> => {
+  const user = await User.findById(tokenId);
+  if (!user) {
+    throw new ApiError(401, 'Invalid refresh token');
+  }
+
+  if (incomingRefreshToken !== user.refreshToken) {
+    throw new ApiError(401, 'Invalid refresh token');
+  }
+  const accessToken = user.generateAccessToken();
+  const refreshToken = user.generateRefreshToken();
+  user.refreshToken = refreshToken;
+  const result = await user.save({ validateBeforeSave: false });
+  return { accessToken, refreshToken };
 };

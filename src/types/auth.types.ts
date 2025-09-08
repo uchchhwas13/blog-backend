@@ -35,8 +35,8 @@ type SignupSuccessData = {
 
 export type SignupResponse = APIResponse<SignupSuccessData>;
 
-type TokenResponse = {
+export type TokenResponse = {
   accessToken: string;
   refreshToken: string;
 };
-export type RefreshTokenResponse = APIResponse<TokenResponse> | ErrorResponse;
+export type RefreshTokenResponse = APIResponse<TokenResponse>;
