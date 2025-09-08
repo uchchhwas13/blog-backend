@@ -10,7 +10,7 @@ type UserData = {
   name: string;
 };
 
-type SigninSuccessData = {
+export type SigninSuccessData = {
   user: UserData;
   accessToken: string;
   refreshToken: string;

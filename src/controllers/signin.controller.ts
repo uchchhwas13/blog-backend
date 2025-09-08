@@ -1,40 +1,29 @@
 import { User } from '../models/user';
 import { Request, Response } from 'express';
-import { AuthPayload, RefreshTokenResponse, SigninResponse } from '../types/auth.types';
+import {
+  AuthPayload,
+  RefreshTokenResponse,
+  SigninResponse,
+  SignupSuccessResponse,
+} from '../types/auth.types';
 import { verifyRefreshToken } from '../services/authentication';
 import { ApiError } from '../utils/ApiError';
+import { signinUser } from '../services/auth.service';
 
 export const handleSignin = async (
   req: Request<{}, {}, AuthPayload>,
-  res: Response<SigninResponse>,
+  res: Response<SignupSuccessResponse>,
 ) => {
-  const { email, password } = req.body;
-  const trimmedEmail = email.trim();
-  const user = await User.findOne({ email: trimmedEmail });
-  if (!user) {
-    throw new ApiError(404, 'user not found');
-  }
   try {
-    user.matchPassword(user, password);
-    const accessToken = user.generateAccessToken();
-    const refreshToken = user.generateRefreshToken();
+    const { email, password } = req.body;
+    const data = await signinUser(email, password);
 
-    user.refreshToken = refreshToken;
-    user.save({ validateBeforeSave: false });
-    const userData = {
-      id: user._id.toString(),
-      email: user.email,
-      name: user.name,
-    };
-    return res.status(200).send({
+    const response: SignupSuccessResponse = {
       success: true,
       message: 'Signin successful',
-      data: {
-        user: userData,
-        accessToken,
-        refreshToken,
-      },
-    });
+      data: data,
+    };
+    return res.status(200).json(response);
   } catch (error) {
     throw new ApiError(401, 'Incorrect email or password', error);
   }
