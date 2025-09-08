@@ -104,6 +104,8 @@ export const handleGetBlogDetails = async (
       const result = await BlogLike.findOne({ blogId: req.params.id, userId: req.user.id });
       isLikedByUser = result?.isLiked ?? false;
     }
+
+    const user = blog.createdBy instanceof User ? blog.createdBy : null;
     const sanitizedBlog = {
       id: blog._id.toString(),
       title: blog.title,
@@ -112,26 +114,27 @@ export const handleGetBlogDetails = async (
       isLikedByUser: isLikedByUser,
       totalLikes: blog.likeCount,
       createdBy: {
-        name: blog.createdBy instanceof User ? blog.createdBy.name : 'Unknown',
-        imageUrl:
-          blog.createdBy instanceof User
-            ? buildFileUrl(req, blog.createdBy.profileImageUrl)
-            : buildFileUrl(req, '/images/default.png'),
+        name: user ? user.name : 'Unknown',
+        imageUrl: user
+          ? buildFileUrl(req, user.profileImageUrl)
+          : buildFileUrl(req, '/images/default.png'),
       },
       createdAt: blog.createdAt,
     };
-    const sanitizedComments = comments.map((comment) => ({
-      id: comment._id.toString(),
-      content: comment.content,
-      createdBy: {
-        name: comment.createdBy instanceof User ? comment.createdBy.name : 'Unknown',
-        imageUrl:
-          comment.createdBy instanceof User
-            ? buildFileUrl(req, comment.createdBy.profileImageUrl)
+    const sanitizedComments = comments.map((comment) => {
+      const user = comment.createdBy instanceof User ? comment.createdBy : null;
+      return {
+        id: comment._id.toString(),
+        content: comment.content,
+        createdBy: {
+          name: user ? user.name : 'Unknown',
+          imageUrl: user
+            ? buildFileUrl(req, user.profileImageUrl)
             : buildFileUrl(req, '/images/default.png'),
-      },
-      createdAt: comment.createdAt,
-    }));
+        },
+        createdAt: comment.createdAt,
+      };
+    });
 
     return res.json({
       message: 'Blog details fetched successfully',
