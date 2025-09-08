@@ -56,7 +56,7 @@ export type AddBlogPostPayload = {
   body: string;
 };
 
-type BlogCreationResponse = {
+export type BlogCreationResponse = {
   blog: {
     id: string;
     title: string;
@@ -69,9 +69,7 @@ type BlogCreationResponse = {
     createdAt: Date;
   };
 };
-
-type BlogPostSuccessResponse = APIResponse<BlogCreationResponse>;
-export type BlogPostResponse = BlogPostSuccessResponse | ErrorResponse;
+export type BlogPostResponse = APIResponse<BlogCreationResponse>;
 
 export type BlogItem = {
   id: string;

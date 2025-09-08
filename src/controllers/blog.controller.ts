@@ -13,7 +13,7 @@ import {
 import { buildFileUrl } from '../utils/fileUrlGenerator';
 import { BlogLike } from '../models/blogLike';
 import { ApiError } from '../utils/ApiError';
-import { getBlogList } from '../services/blog.service';
+import { addBlogPost, getBlogList } from '../services/blog.service';
 
 declare global {
   namespace Express {
@@ -50,28 +50,11 @@ export const handleAddBlogPost = async (
     throw new ApiError(400, 'File upload failed');
   }
 
-  const blog = await Blog.create({
-    title: req.body.title,
-    body: req.body.body,
-    coverImageUrl: `/uploads/${req.file.filename}`,
-    createdBy: req.user.id,
-  });
+  const data = await addBlogPost(req.body, req.user, req);
   return res.status(201).json({
     success: true,
     message: 'Blog post created successfully',
-    data: {
-      blog: {
-        id: blog._id.toString(),
-        title: blog.title,
-        body: blog.body,
-        coverImageUrl: buildFileUrl(req, blog.coverImageUrl),
-        createdBy: {
-          name: req.user.name,
-          id: req.user.id,
-        },
-        createdAt: blog.createdAt,
-      },
-    },
+    data,
   });
 };
 
