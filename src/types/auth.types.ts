@@ -37,15 +37,8 @@ export type SignupSuccessResponse = APIResponse<SignupSuccessData>;
 
 export type SigninResponse = SigninSuccessResponse | ErrorResponse;
 export type SignupResponse = SignupSuccessResponse | ErrorResponse;
-
-export const accessTokenCookieOptions = {
-  httpOnly: true,
-  secure: false, // true if HTTPS
-  maxAge: 60 * 1000, // 1 minute
+type TokenResponse = {
+  accessToken: string;
+  refreshToken: string;
 };
-
-export const refreshTokenCookieOptions = {
-  httpOnly: true,
-  secure: false, // true if HTTPS
-  maxAge: 60 * 60 * 1000, // 1 hour
-};
+export type RefreshTokenResponse = APIResponse<TokenResponse> | ErrorResponse;

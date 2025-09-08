@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { User } from '../models/user';
 import { SignupPayload, SignupResponse } from '../types/auth.types';
+import { ApiError } from '../utils/ApiError';
 
 export const handleSignup = async (
   req: Request<{}, {}, SignupPayload>,
@@ -16,7 +17,7 @@ export const handleSignup = async (
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(409).json({ success: false, message: 'Email already registered' });
+      throw new ApiError(409, 'Email already registered');
     }
 
     const result = await User.create({

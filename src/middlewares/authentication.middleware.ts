@@ -6,7 +6,7 @@ import { TokenExpiredError, JsonWebTokenError } from 'jsonwebtoken';
 
 export function authenticateRequest(cookieName: string): RequestHandler {
   return async (req: Request, _: Response, next: NextFunction): Promise<void> => {
-    const token = req.cookies?.[cookieName] || req.headers?.authorization?.split(' ')[1];
+    const token = req.headers?.authorization?.split(' ')[1];
     if (!token) {
       return next();
     }

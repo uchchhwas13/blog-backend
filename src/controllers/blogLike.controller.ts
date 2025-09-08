@@ -4,6 +4,7 @@ import { BlogLikeResponse, BlogLikesResponse } from '../types/blog.type';
 import { Blog } from '../models/blog';
 import { User } from '../models/user';
 import { buildFileUrl } from '../utils/fileUrlGenerator';
+import { ApiError } from '../utils/ApiError';
 
 export const handleBlogLikeStatus = async (
   req: Request<{ blogId: string }, {}, { isLiked: boolean }>,
@@ -12,7 +13,7 @@ export const handleBlogLikeStatus = async (
   const { blogId } = req.params;
   const { isLiked } = req.body;
   if (!req.user) {
-    return res.status(401).json({ success: false, message: 'Unauthorized' });
+    throw new ApiError(401, 'Unauthorized');
   }
   const userId = req.user.id;
 

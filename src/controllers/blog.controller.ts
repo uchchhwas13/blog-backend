@@ -12,6 +12,7 @@ import {
 } from '../types/blog.type';
 import { buildFileUrl } from '../utils/fileUrlGenerator';
 import { BlogLike } from '../models/blogLike';
+import { ApiError } from '../utils/ApiError';
 
 declare global {
   namespace Express {
@@ -37,8 +38,7 @@ export const handleGetBlogList = async (req: Request, res: Response<BlogListAPIR
       },
     });
   } catch (error) {
-    console.error('Error fetching blog list:', error);
-    return res.status(500).json({ success: false, message: 'Internal server error' });
+    throw new ApiError(500, 'Internal server error', error);
   }
 };
 
@@ -47,17 +47,11 @@ export const handleAddBlogPost = async (
   res: Response<BlogPostResponse>,
 ) => {
   if (!req.user) {
-    return res.status(401).json({
-      success: false,
-      message: 'User not authenticated',
-    });
+    throw new ApiError(401, 'Unauthorized');
   }
 
   if (!req.file) {
-    return res.status(400).json({
-      success: false,
-      message: 'File upload failed',
-    });
+    throw new ApiError(400, 'File upload failed');
   }
 
   const blog = await Blog.create({
@@ -92,7 +86,7 @@ export const handleGetBlogDetails = async (
   try {
     const blog = await Blog.findById(req.params.id).populate('createdBy');
     if (!blog) {
-      return res.status(404).json({ success: false, message: 'Blog not found' });
+      throw new ApiError(404, 'Blog not found');
     }
 
     const comments = await Comment.find({ blogId: req.params.id })
