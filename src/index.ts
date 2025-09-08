@@ -2,7 +2,6 @@ require('dotenv').config();
 import express from 'express';
 import path from 'path';
 import mongoose from 'mongoose';
-import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
 import userRouter from './routes/user.route';
@@ -29,7 +28,6 @@ app.use(
 );
 
 app.use(express.json());
-app.use(cookieParser());
 app.use(authenticateRequest('accessToken'));
 app.use(express.static(path.resolve('./public')));
 
