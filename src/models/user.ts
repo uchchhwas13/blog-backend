@@ -1,6 +1,7 @@
 import { createHmac, randomBytes } from 'crypto';
 import mongoose, { Schema } from 'mongoose';
 import jwt from 'jsonwebtoken';
+import { ApiError } from '../utils/ApiError';
 require('dotenv').config();
 
 export interface IUser extends Document {
@@ -58,7 +59,7 @@ userSchema.pre('save', function (next) {
 
 userSchema.methods.matchPassword = function (user: IUser, password: string) {
   const userProvidedHash = createHmac('sha256', user.salt).update(password).digest('hex');
-  if (userProvidedHash !== user.password) throw new Error('Incorrect password');
+  if (userProvidedHash !== user.password) throw new ApiError(401, 'Invalid credentials');
 };
 
 userSchema.methods.generateAccessToken = function (): string {
