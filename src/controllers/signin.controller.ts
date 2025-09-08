@@ -1,19 +1,18 @@
 import { User } from '../models/user';
 import { Request, Response } from 'express';
-import { AuthPayload, RefreshTokenResponse, SignupSuccessResponse } from '../types/auth.types';
+import { AuthPayload, RefreshTokenResponse, SigninResponse } from '../types/auth.types';
 import { verifyRefreshToken } from '../services/authentication';
 import { ApiError } from '../utils/ApiError';
 import { signinUser } from '../services/auth.service';
-import { ca } from 'zod/v4/locales/index.cjs';
 
 export const handleSignin = async (
   req: Request<{}, {}, AuthPayload>,
-  res: Response<SignupSuccessResponse>,
+  res: Response<SigninResponse>,
 ) => {
   const { email, password } = req.body;
   const data = await signinUser(email, password);
 
-  const response: SignupSuccessResponse = {
+  const response: SigninResponse = {
     success: true,
     message: 'Signin successful',
     data: data,
