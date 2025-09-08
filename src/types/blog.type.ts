@@ -73,7 +73,7 @@ type BlogCreationResponse = {
 type BlogPostSuccessResponse = APIResponse<BlogCreationResponse>;
 export type BlogPostResponse = BlogPostSuccessResponse | ErrorResponse;
 
-type BlogItem = {
+export type BlogItem = {
   id: string;
   title: string;
   coverImageUrl: string;

@@ -13,6 +13,7 @@ import {
 import { buildFileUrl } from '../utils/fileUrlGenerator';
 import { BlogLike } from '../models/blogLike';
 import { ApiError } from '../utils/ApiError';
+import { getBlogList } from '../services/blog.service';
 
 declare global {
   namespace Express {
@@ -24,17 +25,12 @@ declare global {
 
 export const handleGetBlogList = async (req: Request, res: Response<BlogListAPIResponse>) => {
   try {
-    const blogs = await Blog.find({}).populate('createdBy').sort({ createdAt: -1 });
+    const blogs = await getBlogList(req);
     return res.status(200).json({
       success: true,
       message: 'Blog list fetched successfully',
       data: {
-        blogs: blogs.map((blog) => ({
-          id: blog._id.toString(),
-          title: blog.title,
-          coverImageUrl: buildFileUrl(req, blog.coverImageUrl),
-          createdAt: blog.createdAt,
-        })),
+        blogs,
       },
     });
   } catch (error) {
