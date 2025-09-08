@@ -1,11 +1,6 @@
 import { User } from '../models/user';
 import { Request, Response } from 'express';
-import {
-  AuthPayload,
-  RefreshTokenResponse,
-  SigninResponse,
-  SignupSuccessResponse,
-} from '../types/auth.types';
+import { AuthPayload, RefreshTokenResponse, SignupSuccessResponse } from '../types/auth.types';
 import { verifyRefreshToken } from '../services/authentication';
 import { ApiError } from '../utils/ApiError';
 import { signinUser } from '../services/auth.service';
