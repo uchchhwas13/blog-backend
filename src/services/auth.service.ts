@@ -1,7 +1,8 @@
 // services/auth.service.ts
 import { User } from '../models/user';
 import { ApiError } from '../utils/ApiError';
-import { SigninSuccessData } from '../types/auth.types';
+import { SigninSuccessData, UserData } from '../types/auth.types';
+import { SignupPayload } from '../types/auth.types';
 
 export async function signinUser(email: string, password: string): Promise<SigninSuccessData> {
   const trimmedEmail = email.trim();
@@ -29,3 +30,30 @@ export async function signinUser(email: string, password: string): Promise<Signi
     refreshToken,
   };
 }
+
+export const signupUser = async (
+  payload: SignupPayload,
+  file?: Express.Multer.File,
+): Promise<UserData> => {
+  const { fullname, email, password } = payload;
+
+  const existingUser = await User.findOne({ email });
+  if (existingUser) {
+    throw new ApiError(409, 'Email already registered');
+  }
+
+  const profileImageUrl = file ? `/uploads/${file.filename}` : '/images/default.png';
+
+  const result = await User.create({
+    name: fullname,
+    email,
+    password,
+    profileImageUrl,
+  });
+
+  return {
+    id: result._id.toString(),
+    name: result.name,
+    email: result.email,
+  };
+};
