@@ -4,24 +4,21 @@ import { AuthPayload, RefreshTokenResponse, SignupSuccessResponse } from '../typ
 import { verifyRefreshToken } from '../services/authentication';
 import { ApiError } from '../utils/ApiError';
 import { signinUser } from '../services/auth.service';
+import { ca } from 'zod/v4/locales/index.cjs';
 
 export const handleSignin = async (
   req: Request<{}, {}, AuthPayload>,
   res: Response<SignupSuccessResponse>,
 ) => {
-  try {
-    const { email, password } = req.body;
-    const data = await signinUser(email, password);
+  const { email, password } = req.body;
+  const data = await signinUser(email, password);
 
-    const response: SignupSuccessResponse = {
-      success: true,
-      message: 'Signin successful',
-      data: data,
-    };
-    return res.status(200).json(response);
-  } catch (error) {
-    throw new ApiError(401, 'Incorrect email or password', error);
-  }
+  const response: SignupSuccessResponse = {
+    success: true,
+    message: 'Signin successful',
+    data: data,
+  };
+  return res.status(200).json(response);
 };
 
 export const logoutUser = async (req: Request<{}, {}, { userId: string }>, res: Response) => {
