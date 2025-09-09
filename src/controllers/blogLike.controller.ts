@@ -2,8 +2,7 @@ import { Response, Request } from 'express';
 import { BlogLike } from '../models/blogLike';
 import { BlogLikeResponse, BlogLikesResponse } from '../types/blog.type';
 import { Blog } from '../models/blog';
-import { User } from '../models/user';
-import { buildFileUrl } from '../utils/fileUrlGenerator';
+import { getBlogLikesService } from '../services/blogLike.service';
 import { ApiError } from '../utils/ApiError';
 
 export const handleBlogLikeStatus = async (
@@ -43,15 +42,7 @@ export const handleGetBlogLikes = async (
 ) => {
   const { blogId } = req.params;
 
-  const likes = await BlogLike.find({ blogId, isLiked: true }).populate('userId');
-  const likeList = likes.map((like) => {
-    const user = like.userId instanceof User ? like.userId : null;
-    return {
-      userId: user ? user._id.toString() : 'Unknown',
-      name: user ? user.name : 'Unknown',
-      imageUrl: buildFileUrl(req, user?.profileImageUrl ?? '/images/default.png'),
-    };
-  });
+  const likeList = await getBlogLikesService(req, blogId);
 
   return res.status(200).json({
     success: true,
