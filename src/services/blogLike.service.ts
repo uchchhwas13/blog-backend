@@ -12,7 +12,7 @@ export const getBlogLikes = async (req: Request, blogId: string) => {
     return {
       userId: user ? user._id.toString() : 'Unknown',
       name: user ? user.name : 'Unknown',
-      imageUrl: buildFileUrl(req, user?.profileImageUrl ?? '/images/default.png'),
+      imageUrl: buildFileUrl(user?.profileImageUrl ?? '/images/default.png'),
     };
   });
 };

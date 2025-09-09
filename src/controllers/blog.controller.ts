@@ -20,7 +20,7 @@ declare global {
 
 export const handleGetBlogList = async (req: Request, res: Response<BlogListAPIResponse>) => {
   try {
-    const blogs = await getBlogList(req);
+    const blogs = await getBlogList();
     return res.status(200).json({
       success: true,
       message: 'Blog list fetched successfully',
@@ -57,7 +57,7 @@ export const handleGetBlogDetails = async (
   req: Request<{ id: string }>,
   res: Response<BlogWithCommentsResponse>,
 ) => {
-  const data = await getBlogDetails(req, req.params.id, req.user?.id);
+  const data = await getBlogDetails(req.params.id, req.user?.id);
 
   return res.status(200).json({
     message: 'Blog details fetched successfully',

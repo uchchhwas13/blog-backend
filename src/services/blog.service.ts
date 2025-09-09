@@ -13,13 +13,13 @@ import { BlogLike } from '../models/blogLike';
 import { User } from '../models/user';
 import { ApiError } from '../utils/ApiError';
 
-export const getBlogList = async (req: Request): Promise<BlogItem[]> => {
+export const getBlogList = async (): Promise<BlogItem[]> => {
   const blogs = await Blog.find({}).populate('createdBy').sort({ createdAt: -1 });
 
   return blogs.map((blog) => ({
     id: blog._id.toString(),
     title: blog.title,
-    coverImageUrl: buildFileUrl(req, blog.coverImageUrl),
+    coverImageUrl: buildFileUrl(blog.coverImageUrl),
     createdAt: blog.createdAt,
   }));
 };
@@ -41,7 +41,7 @@ export const addBlogPost = async (
       id: blog._id.toString(),
       title: blog.title,
       body: blog.body,
-      coverImageUrl: buildFileUrl(req, blog.coverImageUrl),
+      coverImageUrl: buildFileUrl(blog.coverImageUrl),
       createdBy: {
         id: user.id,
         name: user.name,
@@ -52,7 +52,6 @@ export const addBlogPost = async (
 };
 
 export const getBlogDetails = async (
-  req: Request,
   blogId: string,
   userId?: string,
 ): Promise<BlogWithCommentsData> => {
@@ -74,14 +73,12 @@ export const getBlogDetails = async (
     id: blog._id.toString(),
     title: blog.title,
     body: blog.body,
-    coverImageUrl: buildFileUrl(req, blog.coverImageUrl),
+    coverImageUrl: buildFileUrl(blog.coverImageUrl),
     isLikedByUser,
     totalLikes: blog.likeCount,
     createdBy: {
       name: user ? user.name : 'Unknown',
-      imageUrl: user
-        ? buildFileUrl(req, user.profileImageUrl)
-        : buildFileUrl(req, '/images/default.png'),
+      imageUrl: user ? buildFileUrl(user.profileImageUrl) : buildFileUrl('/images/default.png'),
     },
     createdAt: blog.createdAt,
   };
@@ -94,9 +91,7 @@ export const getBlogDetails = async (
       createdBy: {
         id: user?._id.toString() || 'Unknown',
         name: user ? user.name : 'Unknown',
-        imageUrl: user
-          ? buildFileUrl(req, user.profileImageUrl)
-          : buildFileUrl(req, '/images/default.png'),
+        imageUrl: user ? buildFileUrl(user.profileImageUrl) : buildFileUrl('/images/default.png'),
       },
       createdAt: comment.createdAt,
     };

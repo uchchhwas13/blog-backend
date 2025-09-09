@@ -15,7 +15,6 @@ export const addComment = async (
   blogId: string,
   userId: string,
   content: string,
-  req: Request,
 ): Promise<CommentData> => {
   const comment = await commentRepo.create({
     content,
@@ -34,7 +33,7 @@ export const addComment = async (
       createdAt: comment.createdAt,
       createdBy: {
         name: user.name,
-        imageUrl: buildFileUrl(req, user.profileImageUrl),
+        imageUrl: buildFileUrl(user.profileImageUrl),
       },
     },
   };
@@ -44,7 +43,6 @@ export const updateComment = async (
   commentId: string,
   userId: string,
   content: string,
-  req: Request,
 ): Promise<CommentData> => {
   const existing = await commentRepo.findById(commentId);
   if (!existing) {
@@ -66,7 +64,7 @@ export const updateComment = async (
       createdAt: updated.createdAt,
       createdBy: {
         name: user.name,
-        imageUrl: buildFileUrl(req, user.profileImageUrl),
+        imageUrl: buildFileUrl(user.profileImageUrl),
       },
     },
   };

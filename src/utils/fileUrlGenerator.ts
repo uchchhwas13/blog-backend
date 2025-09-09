@@ -1,5 +1,5 @@
 import { Request } from 'express';
-
-export const buildFileUrl = (req: Request, relativePath: string): string => {
-  return `${req.protocol}://${req.get('host')}${relativePath}`;
+const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
+export const buildFileUrl = (relativePath: string): string => {
+  return `${BASE_URL}${relativePath}`;
 };

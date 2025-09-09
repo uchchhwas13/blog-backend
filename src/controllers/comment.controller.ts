@@ -10,7 +10,7 @@ export const handleAddComment = async (
   if (!req.user) {
     throw new ApiError(401, 'Unauthorized');
   }
-  const data = await addComment(req.params.blogId, req.user.id, req.body.content, req);
+  const data = await addComment(req.params.blogId, req.user.id, req.body.content);
   return res.status(201).json({
     message: 'Comment added successfully',
     success: true,
@@ -25,7 +25,7 @@ export const handleUpdateComment = async (
   if (!req.user) {
     throw new ApiError(401, 'Unauthorized');
   }
-  const data = await updateComment(req.params.commentId, req.user.id, req.body.content, req);
+  const data = await updateComment(req.params.commentId, req.user.id, req.body.content);
   return res.status(200).json({
     message: 'Comment updated successfully',
     success: true,
