@@ -1,40 +1,14 @@
 import { Request } from 'express';
-import { Comment } from '../models/comment';
 import { CommentData } from '../types/blog.type';
-import { IUser, User } from '../models/user';
 import { buildFileUrl } from '../utils/fileUrlGenerator';
 import { ApiError } from '../utils/ApiError';
 import { CommentRepository } from '../repositories/interfaces/CommentRepository';
 import { CommentRepositoryMongoose } from '../repositories/mongoose/CommentRepositoryMongoose';
+import { UserRepository } from '../repositories/interfaces/UserRepository';
+import { UserRepositoryMongoose } from '../repositories/mongoose/UserRepositoryMongoose';
 
 // Repository instance (could be injected via a factory/container if preferred)
 const commentRepo: CommentRepository = new CommentRepositoryMongoose();
-
-interface UserRepository {
-  findById(id: string): Promise<UserEntity | null>;
-}
-
-type UserEntity = {
-  id: string;
-  name: string;
-  profileImageUrl: string;
-};
-
-function map(user: IUser): UserEntity {
-  return {
-    id: user._id.toString(),
-    name: user.name,
-    profileImageUrl: user.profileImageUrl,
-  };
-}
-
-export class UserRepositoryMongoose implements UserRepository {
-  async findById(id: string): Promise<UserEntity | null> {
-    const user = await User.findById(id);
-    return user ? map(user) : null;
-  }
-}
-
 const userRepo: UserRepository = new UserRepositoryMongoose();
 
 export const addComment = async (
