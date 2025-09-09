@@ -9,6 +9,7 @@ import blogRouter from './routes/blog.route';
 
 import { authenticateRequest } from './middlewares/authentication.middleware';
 import { errorHandler } from './middlewares/errorHandler';
+import { contentNegotiation } from './middlewares/contentNegotiation.middleware';
 
 const app = express();
 const PORT = process.env.PORT;
@@ -28,6 +29,7 @@ app.use(
 );
 
 app.use(express.json());
+app.use(contentNegotiation);
 app.use(authenticateRequest('accessToken'));
 app.use(express.static(path.resolve('./public')));
 
