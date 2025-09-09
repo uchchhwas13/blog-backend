@@ -39,7 +39,7 @@ type Comment = {
   createdAt: Date;
 };
 
-type BlogWithCommentsData = {
+export type BlogWithCommentsData = {
   blog: BlogDetail;
   comments: Comment[];
 };

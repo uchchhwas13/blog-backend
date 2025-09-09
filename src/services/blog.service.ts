@@ -1,7 +1,12 @@
 import { Blog } from '../models/blog';
 import { Request } from 'express';
 import { buildFileUrl } from '../utils/fileUrlGenerator';
-import { AddBlogPostPayload, BlogCreationResponse, BlogItem } from '../types/blog.type';
+import {
+  AddBlogPostPayload,
+  BlogCreationResponse,
+  BlogItem,
+  BlogWithCommentsData,
+} from '../types/blog.type';
 import { UserTokenPayload } from './authentication';
 import { Comment } from '../models/comment';
 import { BlogLike } from '../models/blogLike';
@@ -46,7 +51,11 @@ export const addBlogPost = async (
   };
 };
 
-export const getBlogDetails = async (req: Request, blogId: string, userId?: string) => {
+export const getBlogDetails = async (
+  req: Request,
+  blogId: string,
+  userId?: string,
+): Promise<BlogWithCommentsData> => {
   const blog = await Blog.findById(blogId).populate('createdBy');
   if (!blog) {
     throw new ApiError(404, 'Blog not found');
