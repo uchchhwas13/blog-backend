@@ -92,6 +92,7 @@ export const getBlogDetails = async (
       id: comment._id.toString(),
       content: comment.content,
       createdBy: {
+        id: user?._id.toString() || 'Unknown',
         name: user ? user.name : 'Unknown',
         imageUrl: user
           ? buildFileUrl(req, user.profileImageUrl)

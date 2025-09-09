@@ -35,6 +35,7 @@ type Comment = {
   createdBy: {
     name: string;
     imageUrl: string;
+    id: string;
   };
   createdAt: Date;
 };
