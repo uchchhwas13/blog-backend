@@ -86,9 +86,9 @@ type BlogLikeStatus = {
 export type BlogLikeResponse = APIResponse<BlogLikeStatus>;
 
 type LikedUserInfo = {
-  userId: string;
+  id: string;
   name: string;
-  imageUrl: string;
+  profileImageUrl: string;
 };
 type BlogLikesData = {
   totalLikes: number;
