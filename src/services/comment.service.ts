@@ -2,20 +2,16 @@ import { Request } from 'express';
 import { CommentData } from '../types/blog.type';
 import { buildFileUrl } from '../utils/fileUrlGenerator';
 import { ApiError } from '../utils/ApiError';
-import { CommentRepository } from '../repositories/interfaces/CommentRepository';
-import { CommentRepositoryMongoose } from '../repositories/mongoose/CommentRepositoryMongoose';
-import { UserRepository } from '../repositories/interfaces/UserRepository';
-import { UserRepositoryMongoose } from '../repositories/mongoose/UserRepositoryMongoose';
-
-// Repository instance (could be injected via a factory/container if preferred)
-const commentRepo: CommentRepository = new CommentRepositoryMongoose();
-const userRepo: UserRepository = new UserRepositoryMongoose();
+import { RepositoryFactory } from '../repositories/RepositoryFactory';
 
 export const addComment = async (
   blogId: string,
   userId: string,
   content: string,
 ): Promise<CommentData> => {
+  const commentRepo = RepositoryFactory.getCommentRepository();
+  const userRepo = RepositoryFactory.getUserRepository();
+
   const comment = await commentRepo.create({
     content,
     createdBy: userId,
@@ -44,6 +40,9 @@ export const updateComment = async (
   userId: string,
   content: string,
 ): Promise<CommentData> => {
+  const commentRepo = RepositoryFactory.getCommentRepository();
+  const userRepo = RepositoryFactory.getUserRepository();
+
   const existing = await commentRepo.findById(commentId);
   if (!existing) {
     throw new ApiError(404, 'Comment not found');
