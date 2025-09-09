@@ -18,11 +18,6 @@ export type SigninSuccessData = {
 
 export type SigninResponse = APIResponse<SigninSuccessData>;
 
-export type ErrorResponse = {
-  success: false;
-  message: string;
-};
-
 export type SignupPayload = {
   fullname: string;
   email: string;

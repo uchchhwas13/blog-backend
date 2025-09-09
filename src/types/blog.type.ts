@@ -1,4 +1,3 @@
-import { ErrorResponse } from './auth.types';
 import { APIResponse } from '../utils/APIResponse';
 
 export type CommentData = {
@@ -45,9 +44,7 @@ type BlogWithCommentsData = {
   comments: Comment[];
 };
 
-type BlogWithCommentsSuccessResponse = APIResponse<BlogWithCommentsData>;
-
-export type BlogWithCommentsResponse = BlogWithCommentsSuccessResponse | ErrorResponse;
+export type BlogWithCommentsResponse = APIResponse<BlogWithCommentsData>;
 
 export type AddBlogPostPayload = {
   title: string;
@@ -79,15 +76,13 @@ export type BlogItem = {
 type BlogListData = {
   blogs: BlogItem[];
 };
-type BlogListSuccessResponse = APIResponse<BlogListData>;
-export type BlogListAPIResponse = BlogListSuccessResponse | ErrorResponse;
+export type BlogListAPIResponse = APIResponse<BlogListData>;
 
 type BlogLikeStatus = {
   isLiked: boolean;
 };
 
-type BlogLikeSuccessResponse = APIResponse<BlogLikeStatus>;
-export type BlogLikeResponse = BlogLikeSuccessResponse | ErrorResponse;
+export type BlogLikeResponse = APIResponse<BlogLikeStatus>;
 
 type LikedUserInfo = {
   userId: string;
@@ -98,5 +93,4 @@ type BlogLikesData = {
   totalLikes: number;
   users: LikedUserInfo[];
 };
-type BlogLikesSuccessResponse = APIResponse<BlogLikesData>;
-export type BlogLikesResponse = BlogLikesSuccessResponse | ErrorResponse;
+export type BlogLikesResponse = APIResponse<BlogLikesData>;
