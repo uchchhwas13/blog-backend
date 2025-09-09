@@ -30,7 +30,7 @@ export const handleGetBlogLikes = async (
 ) => {
   const { blogId } = req.params;
 
-  const likeList = await getBlogLikes(req, blogId);
+  const likeList = await getBlogLikes(blogId);
 
   return res.status(200).json({
     success: true,

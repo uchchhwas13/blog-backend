@@ -4,7 +4,7 @@ import { buildFileUrl } from '../utils/fileUrlGenerator';
 import { Request } from 'express';
 import { Blog } from '../models/blog';
 
-export const getBlogLikes = async (req: Request, blogId: string) => {
+export const getBlogLikes = async (blogId: string) => {
   const likes = await BlogLike.find({ blogId, isLiked: true }).populate('userId');
 
   return likes.map((like) => {
