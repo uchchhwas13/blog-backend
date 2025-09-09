@@ -59,7 +59,7 @@ export const handleGetBlogDetails = async (
 ) => {
   const data = await getBlogDetails(req, req.params.id, req.user?.id);
 
-  return res.json({
+  return res.status(200).json({
     message: 'Blog details fetched successfully',
     success: true,
     data,
