@@ -1,27 +1,25 @@
 import { Request, Response, NextFunction } from 'express';
 import { parse } from 'js2xmlparser';
 
+function toXml(obj: unknown) {
+  return parse('response', obj, {
+    declaration: { include: true, encoding: 'UTF-8' },
+    format: { doubleQuotes: true, indent: '  ', newline: '\n' },
+  });
+}
+
+function wantsXml(acceptHeader?: string) {
+  if (!acceptHeader) return false;
+  return acceptHeader.includes('application/xml') || acceptHeader.includes('text/xml');
+}
+
 export function contentNegotiation(req: Request, res: Response, next: NextFunction) {
   const originalJson = res.json;
 
   res.json = function (obj: unknown) {
-    const acceptHeader = req.headers.accept || 'application/json';
-    if (acceptHeader.includes('application/xml') || acceptHeader.includes('text/xml')) {
+    if (wantsXml(req.headers.accept)) {
       res.setHeader('Content-Type', 'application/xml; charset=utf-8');
-
-      const xmlResponse = parse('response', obj, {
-        declaration: {
-          include: true,
-          encoding: 'UTF-8',
-        },
-        format: {
-          doubleQuotes: true,
-          indent: '  ',
-          newline: '\n',
-        },
-      });
-
-      return res.send(xmlResponse);
+      return res.send(toXml(obj));
     } else {
       res.setHeader('Content-Type', 'application/json; charset=utf-8');
       return originalJson.call(this, obj);
