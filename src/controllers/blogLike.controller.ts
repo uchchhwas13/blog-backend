@@ -1,10 +1,7 @@
 import { Response, Request } from 'express';
-import { BlogLike } from '../models/blogLike';
 import { BlogLikeResponse, BlogLikesResponse } from '../types/blog.type';
-import { Blog } from '../models/blog';
 import { getBlogLikes } from '../services/blogLike.service';
 import { ApiError } from '../utils/ApiError';
-
 import { updateBlogLikeStatus } from '../services/blogLike.service';
 
 export const handleBlogLikeStatus = async (
