@@ -33,3 +33,36 @@ export const addComment = async (
     },
   };
 };
+
+export const updateComment = async (
+  commentId: string,
+  userId: string,
+  content: string,
+  req: Request,
+): Promise<CommentData> => {
+  const comment = await Comment.findById(commentId);
+  if (!comment) {
+    throw new ApiError(404, 'Comment not found');
+  }
+  if (comment.createdBy.toString() !== userId) {
+    throw new ApiError(403, 'Forbidden: You can only update your own comments');
+  }
+  comment.content = content;
+  await comment.save();
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new ApiError(404, 'User not found');
+  }
+  return {
+    comment: {
+      id: comment._id.toString(),
+      content: comment.content,
+      blogId: comment.blogId.toString(),
+      createdAt: comment.createdAt,
+      createdBy: {
+        name: user.name,
+        imageUrl: buildFileUrl(req, user.profileImageUrl),
+      },
+    },
+  };
+};
