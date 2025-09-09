@@ -4,6 +4,11 @@ import { CommentData } from '../types/blog.type';
 import { User } from '../models/user';
 import { buildFileUrl } from '../utils/fileUrlGenerator';
 import { ApiError } from '../utils/ApiError';
+import { CommentRepository } from '../repositories/interfaces/CommentRepository';
+import { CommentRepositoryMongoose } from '../repositories/mongoose/CommentRepositoryMongoose';
+
+// Repository instance (could be injected via a factory/container if preferred)
+const commentRepo: CommentRepository = new CommentRepositoryMongoose();
 
 export const addComment = async (
   blogId: string,
@@ -11,7 +16,7 @@ export const addComment = async (
   content: string,
   req: Request,
 ): Promise<CommentData> => {
-  const comment = await Comment.create({
+  const comment = await commentRepo.create({
     content,
     createdBy: userId,
     blogId,
@@ -22,9 +27,9 @@ export const addComment = async (
   }
   return {
     comment: {
-      id: comment._id.toString(),
+      id: comment.id,
       content: comment.content,
-      blogId: blogId,
+      blogId: comment.blogId,
       createdAt: comment.createdAt,
       createdBy: {
         name: user.name,
@@ -40,25 +45,24 @@ export const updateComment = async (
   content: string,
   req: Request,
 ): Promise<CommentData> => {
-  const comment = await Comment.findById(commentId);
-  if (!comment) {
+  const existing = await commentRepo.findById(commentId);
+  if (!existing) {
     throw new ApiError(404, 'Comment not found');
   }
-  if (comment.createdBy.toString() !== userId) {
+  if (existing.createdBy !== userId) {
     throw new ApiError(403, 'Forbidden: You can only update your own comments');
   }
-  comment.content = content;
-  await comment.save();
+  const updated = await commentRepo.updateContent(commentId, content);
   const user = await User.findById(userId);
   if (!user) {
     throw new ApiError(404, 'User not found');
   }
   return {
     comment: {
-      id: comment._id.toString(),
-      content: comment.content,
-      blogId: comment.blogId.toString(),
-      createdAt: comment.createdAt,
+      id: updated.id,
+      content: updated.content,
+      blogId: updated.blogId.toString(),
+      createdAt: updated.createdAt,
       createdBy: {
         name: user.name,
         imageUrl: buildFileUrl(req, user.profileImageUrl),
