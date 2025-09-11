@@ -8,6 +8,6 @@ export type BlogLikeEntity = {
 };
 
 export interface BlogLikeRepository {
-  findLikedUsers(blogId: string): Promise<UserEntity[]>;
+  findUsersWhoLikedBlog(blogId: string): Promise<UserEntity[]>;
   updateLikeStatus(blogId: string, userId: string, isLiked: boolean): Promise<{ isLiked: boolean }>;
 }
