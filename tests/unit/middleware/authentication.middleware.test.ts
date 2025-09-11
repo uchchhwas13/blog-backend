@@ -10,9 +10,9 @@ describe('authenticateRequest middleware', () => {
   it('should call next if no token is provided', async () => {
     const req: any = { headers: {} };
     const res: any = {};
+    expect(next).toHaveBeenCalledTimes(0);
 
-    const middleware = authenticateRequest('accessToken');
-    await middleware(req, res, next);
+    await authenticateRequest(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
     expect(req.user).toBeUndefined();
