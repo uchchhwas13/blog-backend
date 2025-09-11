@@ -3,41 +3,21 @@ import { Request, Response } from 'express';
 import { AuthPayload, RefreshTokenResponse, SigninResponse } from '../types/auth.types';
 import { verifyRefreshToken } from '../services/authentication';
 import { ApiError } from '../utils/ApiError';
+import { refreshAccessToken, signinUser } from '../services/auth.service';
 
 export const handleSignin = async (
   req: Request<{}, {}, AuthPayload>,
   res: Response<SigninResponse>,
 ) => {
   const { email, password } = req.body;
-  const trimmedEmail = email.trim();
-  const user = await User.findOne({ email: trimmedEmail });
-  if (!user) {
-    throw new ApiError(404, 'user not found');
-  }
-  try {
-    user.matchPassword(user, password);
-    const accessToken = user.generateAccessToken();
-    const refreshToken = user.generateRefreshToken();
+  const data = await signinUser(email, password);
 
-    user.refreshToken = refreshToken;
-    user.save({ validateBeforeSave: false });
-    const userData = {
-      id: user._id.toString(),
-      email: user.email,
-      name: user.name,
-    };
-    return res.status(200).send({
-      success: true,
-      message: 'Signin successful',
-      data: {
-        user: userData,
-        accessToken,
-        refreshToken,
-      },
-    });
-  } catch (error) {
-    throw new ApiError(401, 'Incorrect email or password', error);
-  }
+  const response: SigninResponse = {
+    success: true,
+    message: 'Signin successful',
+    data: data,
+  };
+  return res.status(200).json(response);
 };
 
 export const logoutUser = async (req: Request<{}, {}, { userId: string }>, res: Response) => {
@@ -68,22 +48,10 @@ export const handleRefreshAccessToken = async (
   if (!decodedToken) {
     throw new ApiError(401, 'Invalid refresh token');
   }
-
-  const user = await User.findById(decodedToken.id);
-  if (!user) {
-    throw new ApiError(401, 'Invalid refresh token');
-  }
-
-  if (incomingRefreshToken !== user.refreshToken) {
-    throw new ApiError(401, 'Invalid refresh token');
-  }
-  const accessToken = user.generateAccessToken();
-  const refreshToken = user.generateRefreshToken();
-  user.refreshToken = refreshToken;
-  const result = await user.save({ validateBeforeSave: false });
+  const data = await refreshAccessToken(decodedToken.id, incomingRefreshToken);
   return res.status(200).json({
     success: true,
-    data: { accessToken, refreshToken },
+    data,
     message: 'Access token refreshed',
   });
 };
