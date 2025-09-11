@@ -2,6 +2,7 @@ import { authenticateRequest } from '../../../src/middlewares/authentication.mid
 import { verifyAccessToken } from '../../../src/services/authentication';
 import { User } from '../../../src/models/user';
 import { ApiError } from '../../../src/utils/ApiError';
+import { TokenExpiredError } from 'jsonwebtoken';
 
 jest.mock('../../../src/services/authentication');
 jest.mock('../../../src/models/user');
@@ -56,5 +57,23 @@ describe('authenticateRequest middleware', () => {
     await expect(authenticateRequest(req, res, next)).rejects.toThrow(
       new ApiError(401, 'Invalid Access Token'),
     );
+  });
+
+  it('should throw ApiError(401) if token is expired', async () => {
+    const req: any = { headers: { authorization: 'Bearer token' } };
+
+    (verifyAccessToken as jest.Mock).mockImplementation(() => {
+      throw new TokenExpiredError('expired', new Date());
+    });
+
+    expect.assertions(3); // ensures catch runs
+
+    try {
+      await authenticateRequest(req, res, next);
+    } catch (err) {
+      expect(err).toBeInstanceOf(ApiError);
+      expect(err.statusCode).toBe(401);
+      expect(err.message).toBe('Access Token Expired');
+    }
   });
 });
