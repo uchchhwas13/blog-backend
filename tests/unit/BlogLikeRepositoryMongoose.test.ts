@@ -15,26 +15,32 @@ describe('BlogLikeRepositoryMongoose', () => {
     jest.clearAllMocks();
   });
 
-  it('should return a list of liked users with profile image URL', async () => {
-    // Arrange
-    const fakeUser = {
+  const createFakeUser = (): typeof User => {
+    const user: any = {
       _id: 'user123',
       name: 'John Doe',
       profileImageUrl: '/uploads/john.png',
     };
-    Object.setPrototypeOf(fakeUser, User.prototype);
-    const fakeLike = {
-      userId: fakeUser, // simulating populated User
-    };
+    Object.setPrototypeOf(user, User.prototype); // make instanceof User work
+    return user;
+  };
 
-    // Mock BlogLike.find().populate()
+  const mockLikesQuery = (likes: any[]) => {
     (BlogLike.find as jest.Mock).mockReturnValue({
-      populate: jest.fn().mockResolvedValue([fakeLike]),
+      populate: jest.fn().mockResolvedValue(likes),
     });
+  };
 
-    // Mock buildFileUrl
-    const imageUrl = `http://localhost${fakeUser.profileImageUrl}`;
-    (buildFileUrl as jest.Mock).mockImplementation((path: string) => imageUrl);
+  const mockFileUrl = (expectedUrl: string) => {
+    (buildFileUrl as jest.Mock).mockImplementation(() => expectedUrl);
+  };
+
+  it('should return a list of liked users with profile image URL', async () => {
+    // Arrange
+    const fakeUser = createFakeUser();
+    mockLikesQuery([{ userId: fakeUser }]);
+    const expectedUrl = `http://localhost${fakeUser.profileImageUrl}`;
+    mockFileUrl(expectedUrl);
 
     // Act
     const result = await repo.findUsersWhoLikedBlog('blog123');
@@ -45,16 +51,14 @@ describe('BlogLikeRepositoryMongoose', () => {
       {
         id: 'user123',
         name: 'John Doe',
-        profileImageUrl: imageUrl,
+        profileImageUrl: expectedUrl,
       },
     ]);
   });
 
   it('should return an empty array if no user liked the blog', async () => {
     // Arrange
-    (BlogLike.find as jest.Mock).mockReturnValue({
-      populate: jest.fn().mockResolvedValue([]),
-    });
+    mockLikesQuery([]); // no likes
 
     // Act
     const result = await repo.findUsersWhoLikedBlog('blog123');
