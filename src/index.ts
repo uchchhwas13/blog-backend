@@ -30,7 +30,7 @@ app.use(
 
 app.use(express.json());
 app.use(contentNegotiation);
-app.use(authenticateRequest('accessToken'));
+app.use(authenticateRequest);
 app.use(express.static(path.resolve('./public')));
 
 app.use('/user', userRouter);
