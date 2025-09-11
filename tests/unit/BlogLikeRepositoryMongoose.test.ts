@@ -2,10 +2,12 @@ import { BlogLikeRepositoryMongoose } from '../../src/repositories/mongoose/Blog
 import { BlogLike } from '../../src/models/blogLike';
 import { buildFileUrl } from '../../src/utils/fileUrlGenerator';
 import { User } from '../../src/models/user';
+import { Blog } from '../../src/models/blog';
 
 jest.mock('../../src/models/blogLike');
 jest.mock('../../src/models/user');
 jest.mock('../../src/utils/fileUrlGenerator');
+jest.mock('../../src/models/blog');
 
 describe('BlogLikeRepositoryMongoose', () => {
   let repo: BlogLikeRepositoryMongoose;
@@ -66,5 +68,24 @@ describe('BlogLikeRepositoryMongoose', () => {
     // Assert
     expect(BlogLike.find).toHaveBeenCalledWith({ blogId: 'blog123', isLiked: true });
     expect(result).toEqual([]);
+  });
+
+  const mockPreviousLike = (previousIsLiked: boolean) => {
+    (BlogLike.findOneAndUpdate as jest.Mock).mockResolvedValue({ isLiked: previousIsLiked });
+  };
+
+  it('should like a blog that was not previously liked', async () => {
+    mockPreviousLike(false);
+    const BLOG_ID = 'blog123';
+    const USER_ID = 'user456';
+    const isLiked = true;
+    const result = await repo.updateLikeStatus(BLOG_ID, USER_ID, isLiked);
+
+    expect(BlogLike.findOneAndUpdate).toHaveBeenCalledWith(
+      { blogId: BLOG_ID, userId: USER_ID },
+      expect.anything(),
+      expect.anything(),
+    );
+    expect(result).toEqual({ isLiked });
   });
 });
