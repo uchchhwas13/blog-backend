@@ -33,7 +33,8 @@ describe('BlogLikeRepositoryMongoose', () => {
     });
 
     // Mock buildFileUrl
-    (buildFileUrl as jest.Mock).mockImplementation((path: string) => `http://localhost${path}`);
+    const imageUrl = `http://localhost${fakeUser.profileImageUrl}`;
+    (buildFileUrl as jest.Mock).mockImplementation((path: string) => imageUrl);
 
     // Act
     const result = await repo.findUsersWhoLikedBlog('blog123');
@@ -44,8 +45,22 @@ describe('BlogLikeRepositoryMongoose', () => {
       {
         id: 'user123',
         name: 'John Doe',
-        profileImageUrl: 'http://localhost/uploads/john.png',
+        profileImageUrl: imageUrl,
       },
     ]);
+  });
+
+  it('should return an empty array if no user liked the blog', async () => {
+    // Arrange
+    (BlogLike.find as jest.Mock).mockReturnValue({
+      populate: jest.fn().mockResolvedValue([]),
+    });
+
+    // Act
+    const result = await repo.findUsersWhoLikedBlog('blog123');
+
+    // Assert
+    expect(BlogLike.find).toHaveBeenCalledWith({ blogId: 'blog123', isLiked: true });
+    expect(result).toEqual([]);
   });
 });
