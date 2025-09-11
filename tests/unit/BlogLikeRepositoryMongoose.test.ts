@@ -36,7 +36,7 @@ describe('BlogLikeRepositoryMongoose', () => {
     (buildFileUrl as jest.Mock).mockImplementation((path: string) => `http://localhost${path}`);
 
     // Act
-    const result = await repo.findLikedUsers('blog123');
+    const result = await repo.findUsersWhoLikedBlog('blog123');
 
     // Assert
     expect(BlogLike.find).toHaveBeenCalledWith({ blogId: 'blog123', isLiked: true });
