@@ -54,9 +54,15 @@ describe('authenticateRequest middleware', () => {
       select: jest.fn().mockResolvedValue(null),
     });
 
-    await expect(authenticateRequest(req, res, next)).rejects.toThrow(
-      new ApiError(401, 'Invalid Access Token'),
-    );
+    expect.assertions(3); // ensures catch runs
+
+    try {
+      await authenticateRequest(req, res, next);
+    } catch (err) {
+      expect(err).toBeInstanceOf(ApiError);
+      expect(err.statusCode).toBe(401);
+      expect(err.message).toBe('Invalid Access Token');
+    }
   });
 
   it('should throw ApiError(401) if token is expired', async () => {
