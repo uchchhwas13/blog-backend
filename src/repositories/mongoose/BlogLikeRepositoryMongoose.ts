@@ -6,7 +6,7 @@ import { BlogLikeRepository } from '../interfaces/BlogLikeRepository';
 import { UserEntity } from '../interfaces/UserRepository';
 
 export class BlogLikeRepositoryMongoose implements BlogLikeRepository {
-  async findLikedUsers(blogId: string): Promise<UserEntity[]> {
+  async findUsersWhoLikedBlog(blogId: string): Promise<UserEntity[]> {
     const likes = await BlogLike.find({ blogId, isLiked: true }).populate('userId');
 
     return likes.map((like) => {
