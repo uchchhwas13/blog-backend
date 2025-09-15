@@ -46,4 +46,14 @@ describe('validateBlog middleware', () => {
     expect(res.json).toHaveBeenCalledWith({ error: 'Cover image is required' });
     expect(next).not.toHaveBeenCalled();
   });
+
+  it('should call next if validation passes', () => {
+    (blogTextSchema.parse as jest.Mock).mockReturnValue(true);
+    (imageFileSchema.parse as jest.Mock).mockReturnValue(true);
+
+    validateBlog(req, res, next);
+
+    expect(next).toHaveBeenCalled();
+    expect(res.status).not.toHaveBeenCalled();
+  });
 });
