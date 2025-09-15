@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { z, ZodType, ZodError } from 'zod';
 import { blogTextSchema, imageFileSchema } from '../validations/blogSchema';
+import { formatZodError } from '../utils/formatZodError';
 
 export function validateBody<T extends ZodType>(schema: T) {
   return (req: Request, res: Response, next: NextFunction) => {
@@ -14,15 +15,6 @@ export function validateBody<T extends ZodType>(schema: T) {
     }
     next();
   };
-}
-
-export function formatZodError(error: ZodError) {
-  return error._zod.def.map((err) => {
-    return {
-      field: err.path.join('.'),
-      message: err.message,
-    };
-  });
 }
 
 export const validateBlog = (req: Request, res: Response, next: NextFunction) => {
