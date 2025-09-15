@@ -1,13 +1,13 @@
-import { BlogLikeRepositoryMongoose } from '../../src/repositories/mongoose/BlogLikeRepositoryMongoose';
-import { BlogLike } from '../../src/models/blogLike';
-import { buildFileUrl } from '../../src/utils/fileUrlGenerator';
-import { User } from '../../src/models/user';
-import { Blog } from '../../src/models/blog';
+import { BlogLikeRepositoryMongoose } from '../../../src/repositories/mongoose/BlogLikeRepositoryMongoose';
+import { BlogLike } from '../../../src/models/blogLike';
+import { buildFileUrl } from '../../../src/utils/fileUrlGenerator';
+import { User } from '../../../src/models/user';
+import { Blog } from '../../../src/models/blog';
 
-jest.mock('../../src/models/blogLike');
-jest.mock('../../src/models/user');
-jest.mock('../../src/utils/fileUrlGenerator');
-jest.mock('../../src/models/blog');
+jest.mock('../../../src/models/blogLike');
+jest.mock('../../../src/models/user');
+jest.mock('../../../src/utils/fileUrlGenerator');
+jest.mock('../../../src/models/blog');
 
 describe('BlogLikeRepositoryMongoose', () => {
   let repo: BlogLikeRepositoryMongoose;
