@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { parse } from 'js2xmlparser';
 
-function toXml(obj: unknown) {
+function toXml(obj: unknown): string {
   return parse('response', obj, {
     declaration: { include: true, encoding: 'UTF-8' },
     format: { doubleQuotes: true, indent: '  ', newline: '\n' },
