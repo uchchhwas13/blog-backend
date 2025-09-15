@@ -1,5 +1,6 @@
 import { validateBlog } from '../../../src/middlewares/validateBlog.middleware';
 import { blogTextSchema, imageFileSchema } from '../../../src/validations/blogSchema';
+import { ZodError } from 'zod';
 
 jest.mock('../../../src/validations/blogSchema', () => ({
   blogTextSchema: { parse: jest.fn() },
@@ -55,5 +56,19 @@ describe('validateBlog middleware', () => {
 
     expect(next).toHaveBeenCalled();
     expect(res.status).not.toHaveBeenCalled();
+  });
+
+  it('should return 400 with formatted Zod error if body validation fails', () => {
+    (blogTextSchema.parse as jest.Mock).mockImplementation(() => {
+      throw new ZodError([]);
+    });
+
+    validateBlog(req, res, next);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      error: 'Validation failed',
+      details: [{ field: 'title', message: 'Required' }],
+    });
   });
 });
