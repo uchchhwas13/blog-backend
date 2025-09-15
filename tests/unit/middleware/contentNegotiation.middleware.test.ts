@@ -32,7 +32,7 @@ describe('contentNegotiation middleware', () => {
     contentNegotiation(req as Request, res as Response, next);
 
     const payload = { foo: 'bar' };
-    const result = (res.json as jest.Mock)(payload);
+    const result = res.json(payload);
 
     expect(res.setHeader).toHaveBeenCalledWith('Content-Type', 'application/json; charset=utf-8');
     expect(result).toBe('json called');
@@ -45,11 +45,25 @@ describe('contentNegotiation middleware', () => {
     contentNegotiation(req as Request, res as Response, next);
 
     const payload = {};
-    const result = (res.json as any)(payload);
+    const result = res.json(payload);
 
     expect(js2xmlparser.parse).toHaveBeenCalledWith('response', payload, expect.any(Object));
     expect(res.setHeader).toHaveBeenCalledWith('Content-Type', 'application/xml; charset=utf-8');
     expect(res.send).toHaveBeenCalledWith('<response><foo>bar</foo></response>');
     expect(result).toBe('send called');
+  });
+
+  it('should default to JSON if Accept header is missing', () => {
+    delete req.headers.accept;
+    const originalJsonMock = res.json;
+
+    contentNegotiation(req as Request, res as Response, next);
+
+    const payload = { foo: 'bar' };
+    res.json(payload);
+
+    expect(res.setHeader).toHaveBeenCalledWith('Content-Type', 'application/json; charset=utf-8');
+    expect(res.send).not.toHaveBeenCalled();
+    expect(originalJsonMock).toHaveBeenCalledWith(payload);
   });
 });
