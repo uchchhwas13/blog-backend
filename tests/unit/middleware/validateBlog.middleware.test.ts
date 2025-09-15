@@ -1,4 +1,5 @@
 import { validateBlog } from '../../../src/middlewares/validateBlog.middleware';
+import { blogTextSchema, imageFileSchema } from '../../../src/validations/blogSchema';
 
 jest.mock('../../../src/validations/blogSchema', () => ({
   blogTextSchema: { parse: jest.fn() },
@@ -32,6 +33,17 @@ describe('validateBlog middleware', () => {
 
     expect(res.status).toHaveBeenCalledWith(401);
     expect(res.json).toHaveBeenCalledWith({ error: 'Unauthorized' });
+    expect(next).not.toHaveBeenCalled();
+  });
+
+  it('should return 400 if no file is provided', () => {
+    (blogTextSchema.parse as jest.Mock).mockReturnValue(true);
+    req.file = null;
+
+    validateBlog(req, res, next);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ error: 'Cover image is required' });
     expect(next).not.toHaveBeenCalled();
   });
 });

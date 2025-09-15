@@ -21,13 +21,11 @@ export const validateBlog = (req: Request, res: Response, next: NextFunction) =>
   if (!req.user) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
-
+  if (!req.file) {
+    return res.status(400).json({ error: 'Cover image is required' });
+  }
   try {
     blogTextSchema.parse(req.body);
-
-    if (!req.file) {
-      return res.status(400).json({ error: 'Cover image is required' });
-    }
     imageFileSchema.parse(req.file);
     next();
   } catch (err) {
