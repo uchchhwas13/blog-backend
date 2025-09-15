@@ -29,4 +29,13 @@ describe('UserRepositoryMongoose', () => {
       profileImageUrl: 'http://img.com/a.png',
     });
   });
+
+  it('should return null when user is not found', async () => {
+    (User.findById as jest.Mock).mockResolvedValue(null);
+
+    const result = await repo.findById('123');
+
+    expect(User.findById).toHaveBeenCalledWith('123');
+    expect(result).toBeNull();
+  });
 });
