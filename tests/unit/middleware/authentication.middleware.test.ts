@@ -58,7 +58,7 @@ describe('authenticateRequest middleware', () => {
 
     try {
       await authenticateRequest(req, res, next);
-    } catch (err) {
+    } catch (err: any) {
       expect(err).toBeInstanceOf(ApiError);
       expect(err.statusCode).toBe(401);
       expect(err.message).toBe('Invalid Access Token');
@@ -76,7 +76,7 @@ describe('authenticateRequest middleware', () => {
 
     try {
       await authenticateRequest(req, res, next);
-    } catch (err) {
+    } catch (err: any) {
       expect(err).toBeInstanceOf(ApiError);
       expect(err.statusCode).toBe(401);
       expect(err.message).toBe('Access Token Expired');
