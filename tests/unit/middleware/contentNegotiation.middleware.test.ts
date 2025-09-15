@@ -9,8 +9,8 @@ describe('contentNegotiation middleware', () => {
   beforeEach(() => {
     req = { headers: {} };
     res = {
-      json: jest.fn(),
-      send: jest.fn(),
+      json: jest.fn().mockReturnValue('json called'),
+      send: jest.fn().mockReturnValue('send called'),
       setHeader: jest.fn(),
     };
     next = jest.fn();
@@ -19,5 +19,18 @@ describe('contentNegotiation middleware', () => {
   it('should call next()', () => {
     contentNegotiation(req as Request, res as Response, next);
     expect(next).toHaveBeenCalled();
+  });
+
+  it('should return JSON if Accept header is application/json', () => {
+    req.headers.accept = 'application/json';
+
+    contentNegotiation(req as Request, res as Response, next);
+
+    const payload = { foo: 'bar' };
+    const result = (res.json as jest.Mock)(payload);
+
+    expect(res.setHeader).toHaveBeenCalledWith('Content-Type', 'application/json; charset=utf-8');
+    expect(result).toBe('json called');
+    expect(res.send).not.toHaveBeenCalled();
   });
 });
