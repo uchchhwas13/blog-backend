@@ -17,14 +17,13 @@ describe('validateBlog middleware', () => {
   let next: jest.Mock;
 
   beforeEach(() => {
+    jest.clearAllMocks();
     req = { body: {}, file: {}, user: { id: 'user123' } };
     res = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
     next = jest.fn();
-
-    jest.clearAllMocks();
   });
 
   it('should return 401 if user is missing', () => {

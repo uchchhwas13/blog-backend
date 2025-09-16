@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { z, ZodType, ZodError } from 'zod';
+import { z, ZodType } from 'zod';
 import { blogTextSchema, imageFileSchema } from '../validations/blogSchema';
 import { formatZodError } from '../utils/formatZodError';
 
