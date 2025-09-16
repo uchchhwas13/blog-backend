@@ -34,4 +34,17 @@ describe('validateBody middleware', () => {
     expect(res.status).not.toHaveBeenCalled();
     expect(res.json).not.toHaveBeenCalled();
   });
+
+  it('should return 400 with formatted errors if validation fails', () => {
+    req.body = {};
+    const middleware = validateBody(schema);
+    middleware(req, res, next);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      error: 'Validation failed',
+      details: [{ field: 'name', message: 'Required' }],
+    });
+    expect(next).not.toHaveBeenCalled();
+  });
 });
