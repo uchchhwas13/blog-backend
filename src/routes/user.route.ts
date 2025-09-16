@@ -5,7 +5,7 @@ import {
   handleSignin,
   logoutUser,
 } from '../controllers/signin.controller';
-import { validateBody } from '../middlewares/validateBlog.middleware';
+import { validateBody } from '../middlewares/validateBody.middleware';
 import { signupSchema } from '../validations/signupSchema';
 import { signinSchema } from '../validations/signinSchema';
 import { upload } from '../middlewares/multer.middleware';

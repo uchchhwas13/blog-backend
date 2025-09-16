@@ -1,4 +1,4 @@
-import { validateBody } from '../../../src/middlewares/validateBlog.middleware';
+import { validateBody } from '../../../src/middlewares/validateBody.middleware';
 import { z } from 'zod';
 
 jest.mock('../../../src/utils/formatZodError', () => ({
