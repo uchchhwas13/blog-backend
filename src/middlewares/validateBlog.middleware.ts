@@ -1,41 +1,17 @@
 import { Request, Response, NextFunction } from 'express';
-import { z, ZodType, ZodError } from 'zod';
+import { z } from 'zod';
 import { blogTextSchema, imageFileSchema } from '../validations/blogSchema';
-
-export function validateBody<T extends ZodType>(schema: T) {
-  return (req: Request, res: Response, next: NextFunction) => {
-    const result = schema.safeParse(req.body);
-    if (!result.success) {
-      const simplifiedErrors = formatZodError(result.error);
-      return res.status(400).json({
-        error: 'Validation failed',
-        details: simplifiedErrors,
-      });
-    }
-    next();
-  };
-}
-
-export function formatZodError(error: ZodError) {
-  return error._zod.def.map((err) => {
-    return {
-      field: err.path.join('.'),
-      message: err.message,
-    };
-  });
-}
+import { formatZodError } from '../utils/formatZodError';
 
 export const validateBlog = (req: Request, res: Response, next: NextFunction) => {
   if (!req.user) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
-
+  if (!req.file) {
+    return res.status(400).json({ error: 'Cover image is required' });
+  }
   try {
     blogTextSchema.parse(req.body);
-
-    if (!req.file) {
-      return res.status(400).json({ error: 'Cover image is required' });
-    }
     imageFileSchema.parse(req.file);
     next();
   } catch (err) {

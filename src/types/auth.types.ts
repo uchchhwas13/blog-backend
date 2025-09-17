@@ -4,24 +4,19 @@ export type AuthPayload = {
   password: string;
 };
 
-type UserData = {
+export type UserData = {
   id: string;
   email: string;
   name: string;
 };
 
-type SigninSuccessData = {
+export type SigninSuccessData = {
   user: UserData;
   accessToken: string;
   refreshToken: string;
 };
 
-export type SigninSuccessResponse = APIResponse<SigninSuccessData>;
-
-export type ErrorResponse = {
-  success: false;
-  message: string;
-};
+export type SigninResponse = APIResponse<SigninSuccessData>;
 
 export type SignupPayload = {
   fullname: string;
@@ -33,12 +28,10 @@ type SignupSuccessData = {
   user: UserData;
 };
 
-export type SignupSuccessResponse = APIResponse<SignupSuccessData>;
+export type SignupResponse = APIResponse<SignupSuccessData>;
 
-export type SigninResponse = SigninSuccessResponse | ErrorResponse;
-export type SignupResponse = SignupSuccessResponse | ErrorResponse;
-type TokenResponse = {
+export type TokenResponse = {
   accessToken: string;
   refreshToken: string;
 };
-export type RefreshTokenResponse = APIResponse<TokenResponse> | ErrorResponse;
+export type RefreshTokenResponse = APIResponse<TokenResponse>;

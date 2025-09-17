@@ -1,7 +1,6 @@
-import { ErrorResponse } from './auth.types';
 import { APIResponse } from '../utils/APIResponse';
 
-type CommentData = {
+export type CommentData = {
   comment: {
     id: string;
     content: string;
@@ -14,9 +13,7 @@ type CommentData = {
   };
 };
 
-export type CommentSuccessResponse = APIResponse<CommentData>;
-
-export type CommentResponse = CommentSuccessResponse | ErrorResponse;
+export type CommentResponse = APIResponse<CommentData>;
 
 type BlogDetail = {
   id: string;
@@ -38,25 +35,24 @@ type Comment = {
   createdBy: {
     name: string;
     imageUrl: string;
+    id: string;
   };
   createdAt: Date;
 };
 
-type BlogWithCommentsData = {
+export type BlogWithCommentsData = {
   blog: BlogDetail;
   comments: Comment[];
 };
 
-type BlogWithCommentsSuccessResponse = APIResponse<BlogWithCommentsData>;
-
-export type BlogWithCommentsResponse = BlogWithCommentsSuccessResponse | ErrorResponse;
+export type BlogWithCommentsResponse = APIResponse<BlogWithCommentsData>;
 
 export type AddBlogPostPayload = {
   title: string;
   body: string;
 };
 
-type BlogCreationResponse = {
+export type BlogCreationResponse = {
   blog: {
     id: string;
     title: string;
@@ -69,11 +65,9 @@ type BlogCreationResponse = {
     createdAt: Date;
   };
 };
+export type BlogPostResponse = APIResponse<BlogCreationResponse>;
 
-type BlogPostSuccessResponse = APIResponse<BlogCreationResponse>;
-export type BlogPostResponse = BlogPostSuccessResponse | ErrorResponse;
-
-type BlogItem = {
+export type BlogItem = {
   id: string;
   title: string;
   coverImageUrl: string;
@@ -83,24 +77,21 @@ type BlogItem = {
 type BlogListData = {
   blogs: BlogItem[];
 };
-type BlogListSuccessResponse = APIResponse<BlogListData>;
-export type BlogListAPIResponse = BlogListSuccessResponse | ErrorResponse;
+export type BlogListAPIResponse = APIResponse<BlogListData>;
 
 type BlogLikeStatus = {
   isLiked: boolean;
 };
 
-type BlogLikeSuccessResponse = APIResponse<BlogLikeStatus>;
-export type BlogLikeResponse = BlogLikeSuccessResponse | ErrorResponse;
+export type BlogLikeResponse = APIResponse<BlogLikeStatus>;
 
 type LikedUserInfo = {
-  userId: string;
+  id: string;
   name: string;
-  imageUrl: string;
+  profileImageUrl: string;
 };
 type BlogLikesData = {
   totalLikes: number;
   users: LikedUserInfo[];
 };
-type BlogLikesSuccessResponse = APIResponse<BlogLikesData>;
-export type BlogLikesResponse = BlogLikesSuccessResponse | ErrorResponse;
+export type BlogLikesResponse = APIResponse<BlogLikesData>;
