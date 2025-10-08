@@ -16,6 +16,6 @@ userRouter.post('/signin', validateBody(signinSchema), handleSignin);
 userRouter.post('/signup', upload.single('profileImage'), validateBody(signupSchema), handleSignup);
 
 userRouter.post('/logout', logoutUser);
-userRouter.post('/refresh-access-token', handleRefreshAccessToken);
+userRouter.post('/token/refresh', handleRefreshAccessToken);
 
 export default userRouter;
